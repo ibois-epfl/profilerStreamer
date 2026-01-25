@@ -1,0 +1,10 @@
+[project]
+name = "profilerstreamer"
+version = "0.1.0"
+description = "This python project reads profiles from Baumer profiler and distances from sick distance sensor to recreate 3D point cloud of a piece of wood in CNC"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pythonnet==3.0.5",
+    "open3d==0.19.0"
+]
