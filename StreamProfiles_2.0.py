@@ -5,7 +5,7 @@ import os
 import open3d as o3d
 
 # path to .NET OXApi.Dll and python wrapper
-api_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../API"))
+api_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "./BaumerSDK/CSharp/API"))
 sys.path.append(api_path)
 import oxapi
 
