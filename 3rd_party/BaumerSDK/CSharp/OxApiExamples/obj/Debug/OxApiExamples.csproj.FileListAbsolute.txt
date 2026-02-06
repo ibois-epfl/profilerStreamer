@@ -1,0 +1,11 @@
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\bin\Debug\OxApiExamples.exe.config
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\bin\Debug\OxApiExamples.exe
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\bin\Debug\OxApiExamples.pdb
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\bin\Debug\OXApi.dll
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\bin\Debug\Newtonsoft.Json.dll
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\bin\Debug\websocket-sharp.dll
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\obj\Debug\OxApiExamples.csproj.AssemblyReference.cache
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\obj\Debug\OxApiExamples.csproj.CoreCompileInputs.cache
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\obj\Debug\OxApiExa.77D9EC13.Up2Date
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\obj\Debug\OxApiExamples.exe
+C:\_work\Jenkins\workspace\OX_SDK\dotnet\OxApiExamples\obj\Debug\OxApiExamples.pdb

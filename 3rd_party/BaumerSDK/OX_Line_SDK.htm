@@ -1,0 +1,2557 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+
+<title>OX_line_API</title>
+
+<link 
+href="doc/md_style.css"
+rel='stylesheet' 
+type='text/css' />
+
+
+</head>
+<body class='typora-export os-windows'>
+<div id="titlearea">
+
+<div id='write'  class=''>
+
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="doc/logo.jpg"/></td>
+  <td style="padding-left: 0.1em;">
+   <div id="projectname">
+   <div class="textblock"><p><a class="anchor" id="imgOx200"></a> <style>div.image img[src="doc/ox200.webp"]{width:250px;}</style><div class="image">
+<img src="doc/ox200.webp" alt="ox200.webp"/>
+   
+
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+
+
+<p><a name='assembly'></a></p>
+
+<h1>OXApi</h1>
+
+<h2>Intro</h2>
+
+<p>The OX-SDK is a set of software libraries and tools to support the integration of the OX into third party applications. It has branches for <a href="#T-Baumer-OXApi-C#" title="Baumer-OXApi-C#">C#</a>, <a href="#T-Baumer-OXApi-C++" title="Baumer-OXApi-C++">C++</a> and <a href="#T-Baumer-OXApi-C#" title="Baumer-OXApi-C#">Python</a>. For detailed installation and compatibility instructions please read the specific sections, <a href="#T-Baumer-OXApi-C#" title="Baumer-OXApi-C#">C#</a> for C# and Python and <a href="#T-Baumer-OXApi-C++" title="Baumer-OXApi-C++">C++</a> for C++ . The section  <a href="#T-Baumer-OXApi-Ox" title="Baumer.OXApi.Ox">Ox</a> describes the commands individually. </p>
+
+<h2>Contents</h2>
+
+<ul>
+<li><a href="#T-Baumer-OXApi-C#" title="Baumer-OXApi-C#">C#, Python</a> </li>
+<li><a href="#T-Baumer-OXApi-C++" title="Baumer-OXApi-C++">C++</a> </li>
+<li><a href="#T-Baumer-OXApi-Ox" title="Baumer.OXApi.Ox">Ox</a>
+<ul>
+<li><a href="#P-Baumer-OXApi-Ox-TimeoutMs" title="Baumer.OXApi.Ox.TimeoutMs">TimeoutMs</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureActiveUdpStreams-System-UInt32[]-" title="Baumer.OXApi.Ox.ConfigureActiveUdpStreams(System.UInt32[])">ConfigureActiveUdpStreams(streamIds)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureExposureTime-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureExposureTime(System.UInt32)">ConfigureExposureTime(exposureTime)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfView-System-Double,System-Double,System-Double,System-Double-" title="Baumer.OXApi.Ox.ConfigureFieldOfView(System.Double,System.Double,System.Double,System.Double)">ConfigureFieldOfView(limitLeft,limitRight,offset,height)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfView-Baumer-OXApi-Types-FieldOfView-" title="Baumer.OXApi.Ox.ConfigureFieldOfView(Baumer.OXApi.Types.FieldOfView)">ConfigureFieldOfView(fieldOfView)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfViewDistance-System-Double,System-Double,System-Double,System-Double-" title="Baumer.OXApi.Ox.ConfigureFieldOfViewDistance(System.Double,System.Double,System.Double,System.Double)">ConfigureFieldOfViewDistance(limitLeft,limitRight,near,far)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureLaserPower-System-Double-" title="Baumer.OXApi.Ox.ConfigureLaserPower(System.Double)">ConfigureLaserPower(factor)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureNetwork-System-Boolean,System-String,System-String,System-String-" title="Baumer.OXApi.Ox.ConfigureNetwork(System.Boolean,System.String,System.String,System.String)">ConfigureNetwork(useDHCP,staticIP,subnetMask,gateway)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureNetwork-Baumer-OXApi-Types-NetworkConfiguration-" title="Baumer.OXApi.Ox.ConfigureNetwork(Baumer.OXApi.Types.NetworkConfiguration)">ConfigureNetwork(configuration)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureProcessInterfaces-System-Boolean,System-Boolean,System-Boolean,System-String,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProcessInterfaces(System.Boolean,System.Boolean,System.Boolean,System.String,System.UInt32,System.UInt32,System.UInt32)">ConfigureProcessInterfaces(enableModbus,enableOpcUa,enableUdpStreaming,udpDestinationIp,udpDestinationPort,realtimeProtocolId,ioLinkProcessDataLayout)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureProfileAlgorithm-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileAlgorithm(System.UInt32)">ConfigureProfileAlgorithm(algorithmID)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureProfileAlgorithmParameters-System-UInt32,System-UInt32,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileAlgorithmParameters(System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ConfigureProfileAlgorithmParameters(algorithmId,minPeakHeight,thresholdValue,thresholdType,minPeakWidth)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureProfileFilter-System-Boolean,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileFilter(System.Boolean,System.UInt32)">ConfigureProfileFilter(movingAverageEnabled,movingAverageLength)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureProfileFilter-Baumer-OXApi-Types-ProfileFilter-" title="Baumer.OXApi.Ox.ConfigureProfileFilter(Baumer.OXApi.Types.ProfileFilter)">ConfigureProfileFilter(profileFilter)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureResampling-System-Boolean,System-Double-" title="Baumer.OXApi.Ox.ConfigureResampling(System.Boolean,System.Double)">ConfigureResampling(enabled,gridValue)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureResolution-System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureResolution(System.UInt32,System.UInt32)">ConfigureResolution(xResolution,zResolution)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureStartupSetup-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureStartupSetup(System.UInt32)">ConfigureStartupSetup(storageNumber)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureTimeServer-System-Boolean,System-String[]-" title="Baumer.OXApi.Ox.ConfigureTimeServer(System.Boolean,System.String[])">ConfigureTimeServer(useNTP,timeServers)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureTrigger-System-UInt32,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureTrigger(System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ConfigureTrigger(triggerMode,modeOption,triggerTime,encoderSteps)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureUdpStreams-System-UInt32[]-" title="Baumer.OXApi.Ox.ConfigureUdpStreams(System.UInt32[])">ConfigureUdpStreams(streamIds)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ConfigureZAxis-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureZAxis(System.UInt32)">ConfigureZAxis(zAxisId)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-Connect" title="Baumer.OXApi.Ox.Connect">Connect()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-Create-System-String,System-UInt32-" title="Baumer.OXApi.Ox.Create(System.String,System.UInt32)">Create(ipAddress,streamingPort)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-CreateStream" title="Baumer.OXApi.Ox.CreateStream">CreateStream()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-Disconnect" title="Baumer.OXApi.Ox.Disconnect">Disconnect()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-EnableLongSession" title="Baumer.OXApi.Ox.EnableLongSession">EnableLongSession()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetActiveSetup" title="Baumer.OXApi.Ox.GetActiveSetup">GetActiveSetup()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetActiveUdpStreams" title="Baumer.OXApi.Ox.GetActiveUdpStreams">GetActiveUdpStreams()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetAxesInfo" title="Baumer.OXApi.Ox.GetAxesInfo">GetAxesInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetExposureTime" title="Baumer.OXApi.Ox.GetExposureTime">GetExposureTime()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetExposureTimeLimits" title="Baumer.OXApi.Ox.GetExposureTimeLimits">GetExposureTimeLimits()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetExposureTimeResolution" title="Baumer.OXApi.Ox.GetExposureTimeResolution">GetExposureTimeResolution()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetFieldOfView" title="Baumer.OXApi.Ox.GetFieldOfView">GetFieldOfView()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetFieldOfViewDistance" title="Baumer.OXApi.Ox.GetFieldOfViewDistance">GetFieldOfViewDistance()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetFieldOfViewInfo" title="Baumer.OXApi.Ox.GetFieldOfViewInfo">GetFieldOfViewInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetFieldOfViewLimits" title="Baumer.OXApi.Ox.GetFieldOfViewLimits">GetFieldOfViewLimits()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetImage" title="Baumer.OXApi.Ox.GetImage">GetImage()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetImageInfo" title="Baumer.OXApi.Ox.GetImageInfo">GetImageInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetIntensityProfile" title="Baumer.OXApi.Ox.GetIntensityProfile">GetIntensityProfile()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetLaserPower" title="Baumer.OXApi.Ox.GetLaserPower">GetLaserPower()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetLaserPowerInfo" title="Baumer.OXApi.Ox.GetLaserPowerInfo">GetLaserPowerInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetLaserPowerLimits" title="Baumer.OXApi.Ox.GetLaserPowerLimits">GetLaserPowerLimits()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetMeasurement" title="Baumer.OXApi.Ox.GetMeasurement">GetMeasurement()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetMeasurementInfo" title="Baumer.OXApi.Ox.GetMeasurementInfo">GetMeasurementInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetMeasurementValuesInfo" title="Baumer.OXApi.Ox.GetMeasurementValuesInfo">GetMeasurementValuesInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetNetworkConfiguration" title="Baumer.OXApi.Ox.GetNetworkConfiguration">GetNetworkConfiguration()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetNumberOfSetups" title="Baumer.OXApi.Ox.GetNumberOfSetups">GetNumberOfSetups()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetNumberOfTimeServers" title="Baumer.OXApi.Ox.GetNumberOfTimeServers">GetNumberOfTimeServers()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetParameterSetup-System-UInt32-" title="Baumer.OXApi.Ox.GetParameterSetup(System.UInt32)">GetParameterSetup(storageNumber)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProcessInterfaces" title="Baumer.OXApi.Ox.GetProcessInterfaces">GetProcessInterfaces()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProcessInterfacesInfo" title="Baumer.OXApi.Ox.GetProcessInterfacesInfo">GetProcessInterfacesInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfile" title="Baumer.OXApi.Ox.GetProfile">GetProfile()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithm" title="Baumer.OXApi.Ox.GetProfileAlgorithm">GetProfileAlgorithm()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithmParameters-System-UInt32-" title="Baumer.OXApi.Ox.GetProfileAlgorithmParameters(System.UInt32)">GetProfileAlgorithmParameters(algorithmId)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithmParamsInfo" title="Baumer.OXApi.Ox.GetProfileAlgorithmParamsInfo">GetProfileAlgorithmParamsInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithmParamsLimits-System-UInt32-" title="Baumer.OXApi.Ox.GetProfileAlgorithmParamsLimits(System.UInt32)">GetProfileAlgorithmParamsLimits(algorithmId)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithms" title="Baumer.OXApi.Ox.GetProfileAlgorithms">GetProfileAlgorithms()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileFilter" title="Baumer.OXApi.Ox.GetProfileFilter">GetProfileFilter()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileFilterLimits" title="Baumer.OXApi.Ox.GetProfileFilterLimits">GetProfileFilterLimits()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetProfileInfo" title="Baumer.OXApi.Ox.GetProfileInfo">GetProfileInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetResamplingGridValue" title="Baumer.OXApi.Ox.GetResamplingGridValue">GetResamplingGridValue()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetResamplingInfo" title="Baumer.OXApi.Ox.GetResamplingInfo">GetResamplingInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetResolution" title="Baumer.OXApi.Ox.GetResolution">GetResolution()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetResolutionInfo" title="Baumer.OXApi.Ox.GetResolutionInfo">GetResolutionInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetSecondaryData" title="Baumer.OXApi.Ox.GetSecondaryData">GetSecondaryData()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetSensorInfo" title="Baumer.OXApi.Ox.GetSensorInfo">GetSensorInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetStartupSetup" title="Baumer.OXApi.Ox.GetStartupSetup">GetStartupSetup()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetTimeServerConfiguration" title="Baumer.OXApi.Ox.GetTimeServerConfiguration">GetTimeServerConfiguration()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetTrigger" title="Baumer.OXApi.Ox.GetTrigger">GetTrigger()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetTriggerInfo" title="Baumer.OXApi.Ox.GetTriggerInfo">GetTriggerInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetTriggerLimits" title="Baumer.OXApi.Ox.GetTriggerLimits">GetTriggerLimits()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetUdpStreamingInfo" title="Baumer.OXApi.Ox.GetUdpStreamingInfo">GetUdpStreamingInfo()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-GetZAxis" title="Baumer.OXApi.Ox.GetZAxis">GetZAxis()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-IsProfileFilterEnabled" title="Baumer.OXApi.Ox.IsProfileFilterEnabled">IsProfileFilterEnabled()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-IsResamplingEnabled" title="Baumer.OXApi.Ox.IsResamplingEnabled">IsResamplingEnabled()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-LoadParameterSetup-System-UInt32-" title="Baumer.OXApi.Ox.LoadParameterSetup(System.UInt32)">LoadParameterSetup(storageNumber)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-Login-System-String,System-String-" title="Baumer.OXApi.Ox.Login(System.String,System.String)">Login(role,password)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-Logout" title="Baumer.OXApi.Ox.Logout">Logout()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ReadAllSettings" title="Baumer.OXApi.Ox.ReadAllSettings">ReadAllSettings()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ReadSetting-System-UInt32-" title="Baumer.OXApi.Ox.ReadSetting(System.UInt32)">ReadSetting(storageNumber)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ResetAllSettings" title="Baumer.OXApi.Ox.ResetAllSettings">ResetAllSettings()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-ResetSettings-System-UInt32-" title="Baumer.OXApi.Ox.ResetSettings(System.UInt32)">ResetSettings()</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-StoreParameterSetup-System-UInt32-" title="Baumer.OXApi.Ox.StoreParameterSetup(System.UInt32)">StoreParameterSetup(storageNumber)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-Trigger-System-UInt32-" title="Baumer.OXApi.Ox.Trigger(System.UInt32)">Trigger(count)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-WriteAllSettings-System-String-" title="Baumer.OXApi.Ox.WriteAllSettings(System.String)">WriteAllSettings(settings)</a></li>
+<li><a href="#M-Baumer-OXApi-Ox-WriteSetting-System-String,System-UInt32-" title="Baumer.OXApi.Ox.WriteSetting(System.String,System.UInt32)">WriteSetting(setting,storageNumber)</a></li>
+</ul></li>
+<li><a href="#T-Baumer-OXApi-UdpStreaming-OxStream" title="Baumer.OXApi.UdpStreaming.OxStream">OxStream</a>
+<ul>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-ErrorOccured" title="Baumer.OXApi.UdpStreaming.OxStream.ErrorOccured">ErrorOccured</a></li>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-FullQueueHandling" title="Baumer.OXApi.UdpStreaming.OxStream.FullQueueHandling">FullQueueHandling</a></li>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-MeasurementAvailable" title="Baumer.OXApi.UdpStreaming.OxStream.MeasurementAvailable">MeasurementAvailable</a></li>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-MeasurementCount" title="Baumer.OXApi.UdpStreaming.OxStream.MeasurementCount">MeasurementCount</a></li>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-ProfileAvailable" title="Baumer.OXApi.UdpStreaming.OxStream.ProfileAvailable">ProfileAvailable</a></li>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-ProfileCount" title="Baumer.OXApi.UdpStreaming.OxStream.ProfileCount">ProfileCount</a></li>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-QueueSize" title="Baumer.OXApi.UdpStreaming.OxStream.QueueSize">QueueSize</a></li>
+<li><a href="#P-Baumer-OXApi-UdpStreaming-OxStream-ReceiveBufferSize" title="Baumer.OXApi.UdpStreaming.OxStream.ReceiveBufferSize">ReceiveBufferSize</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-ClearMeasurementQueue" title="Baumer.OXApi.UdpStreaming.OxStream.ClearMeasurementQueue">ClearMeasurementQueue()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-ClearProfileQueue" title="Baumer.OXApi.UdpStreaming.OxStream.ClearProfileQueue">ClearProfileQueue()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-Close" title="Baumer.OXApi.UdpStreaming.OxStream.Close">Close()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-Dispose" title="Baumer.OXApi.UdpStreaming.OxStream.Dispose">Dispose()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-ReadError" title="Baumer.OXApi.UdpStreaming.OxStream.ReadError">ReadError()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-ReadMeasurement" title="Baumer.OXApi.UdpStreaming.OxStream.ReadMeasurement">ReadMeasurement()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-ReadProfile" title="Baumer.OXApi.UdpStreaming.OxStream.ReadProfile">ReadProfile()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-Start" title="Baumer.OXApi.UdpStreaming.OxStream.Start">Start()</a></li>
+<li><a href="#M-Baumer-OXApi-UdpStreaming-OxStream-Stop" title="Baumer.OXApi.UdpStreaming.OxStream.Stop">Stop()</a></li>
+</ul></li>
+</ul>
+
+<p><a name='T-Baumer-OXApi-C#'></a></p>
+
+<h2>SDK for  C</h2>
+
+<h5>Summary</h5>
+
+<p>﻿The OX-SDK is a set of software libraries and tools to support the integration of the OX into third party applications. 
+The SDK is based on the .NET Library 'OXApi.dll' which can be easily integrated into own C# or VB programs or standard software tools like Matlab or TestStand. 
+In addition there is a python wrapper (oxapi.py) available for the 'OXApi.dll' to use all their features from a python environment.</p>
+
+<p>The OX SDK consists of the following parts:</p>
+
+<ul>
+<li>A .NET assembly (OXApi.dll) which provides access to all OX configuration and measurement possibilities.</li>
+<li>A python wrapper which allows the use of OxAPI.dll in a python environment. </li>
+<li>A set of examples in C# and Python which demonstrate the OXApi usage.</li>
+</ul>
+
+<p>Folder structure:</p>
+
+<ul>
+<li>\API\OXApi.dll                    The OX SDK main assembly.</li>
+<li>\API\oxapi.py                     Python wrapper for OXApi.dll.</li>
+<li>\API\Newtonsoft.Json.dll          Third party Json parser (MIT license, see newtonsoft.json.txt).</li>
+<li>\API\websocket-sharp.dll          Third party Websocket library (MIT license, see websocket-sharp.txt).</li>
+</ul>
+
+<ul>
+<li>\OxApiExamples              A C# project which demonstrates the usage of the OXApi.</li>
+<li>\OxPythonExamples           Python examples which demonstrate the usage of the OXApi python wrapper.</li>
+</ul>
+
+<p>Notes:</p>
+
+<p>OXApi:</p>
+
+<ul>
+<li>    The OXApi.dll requires Microsoft .NET Framework 4.6.1       https://www.microsoft.com/de-ch/download/details.aspx?id=49982</li>
+<li>    Only one configuration connection can be established at one time, so if the Webinterface is active, the OXApi will not be able to connect.</li>
+</ul>
+
+<p>Python:</p>
+
+<ul>
+<li>    You have to add the path of the OXApi.dll and oxapi.py to your python path (e.g. sys.path.append(r"C:\Program Files\Baumer\OXSDK\API").</li>
+<li>    In order to use the wrapper, pythonnet (>= 2.4) has to be installed in your python environment. (https://pypi.org/project/pythonnet/)</li>
+</ul>
+
+<p>UDP Streaming:</p>
+
+<ul>
+<li>    To use UDP Streaming, the desired streams should be activated by the OXApi or the Webinterface.</li>
+<li>    Ensure that the streaming target IP-Address is configured correctly.</li>
+<li>    If more than one OX should stream to the same computer, different ports should be used.</li>
+<li>    Keep in mind that the windows firewall may block an application from opening an UDP port.</li>
+</ul>
+
+<p>Version history:</p>
+
+<ul>
+<li>V1.0.0 First release.</li>
+<li>V1.0.2 Changed measurement data layout, this is the minimum SDK version for OX firmware version V1-0-7 or greater.</li>
+<li>V1.0.3 Fixed problem with OXAPI.WriteAllSettings()</li>
+<li>V2.0.0 Small API changes, bugfixes</li>
+<li>V2.0.2 Fixed data conversion measurement values in udp stream</li>
+<li>V2.0.3 Introduces 32 bit values for profile udp stream (OXx200-B20 and OXx200-B02)</li>
+</ul>
+
+<p><a name='T-Baumer-OXApi-C++'></a></p>
+
+<h2>SDK for  C++</h2>
+
+<h5>Summary</h5>
+
+<p>﻿The OX-CPP-SDK is a set of software libraries and tools to support the integration of the OX into third party applications. 
+The SDK is based on the C++ Library "libOXApi.so" which can be easily integrated into own C++ programs. </p>
+
+<p>The OX C++ SDK consists of the following parts:</p>
+
+<ul>
+<li>A C++ shared library (libOXApi.so) which provides access to all OX configuration and measurement possibilities.</li>
+<li>The C++ Header files to use the library.</li>
+<li>A example in C++ which demonstrate the OXApi usage.</li>
+</ul>
+
+<p>Linux x86 - LibOxApi_XX-XX-XX.tar.gz:</p>
+
+<p>Folder structure:</p>
+
+<ul>
+<li>/usr/lib/libOXApi.so              The OX C++ SDK main shared library.</li>
+<li>/usr/include                      The OX C++ SDK header files.</li>
+<li>/example                          A C++ cmake example which demonstrates the usage of the OXApi.</li>
+</ul>
+
+<p>Notes:</p>
+
+<p>OXApi:</p>
+
+<ul>
+<li>    libOXApi.so requires Ubuntu 18.04 LTS with Boost 1.70</li>
+<li>    Only one configuration connection can be established at one time, so if the Webinterface is active, the OXApi will not be able to connect.</li>
+</ul>
+
+<p>Setup Development System:</p>
+
+<ul>
+<li>    Get Ubuntu 18.04 LTS (AMD64 desktop image) from https://releases.ubuntu.com/18.04/</li>
+</ul>
+
+<pre><code>   Note: If you only get a black screen while installation, press ESC while Grub menu and then F6 and mark "nomodeset". The start install.
+</code></pre>
+
+<ul>
+<li>    Setup Network to get access to the internet</li>
+<li>    Run following command in terminal:</li>
+</ul>
+
+<pre><code>   sudo apt update
+   sudo apt install build-essential cmake
+</code></pre>
+
+<ul>
+<li>    Install / Upgrade libboost 1.70</li>
+</ul>
+
+<pre><code>   sudo add-apt-repository ppa:mhier/libboost-latest
+   sudo apt update
+   sudo apt install libboost1.70-dev
+</code></pre>
+
+<p>Use SDK example:</p>
+
+<ul>
+<li>    The SDK files are copied to ~/OxApi/</li>
+<li>    Create build directory and run build</li>
+</ul>
+
+<pre><code>   mkdir ~/OxApi/build
+   cd ~/OxApi/build
+   cmake ../example
+   cmake --build .
+</code></pre>
+
+<ul>
+<li>    Run example</li>
+</ul>
+
+<pre><code>   ./oxapiexamples
+</code></pre>
+
+<p>Windows Win32 and x64 - LibOxApi_XX-XX-XX.zip:</p>
+
+<p>Folder structure:</p>
+
+<ul>
+<li>/libs                             The OX C++ SDK main shared library.</li>
+<li>/include/OXApi                    The OX C++ SDK header files.</li>
+<li>/example                          A C++ cmake example which demonstrates the usage of the OXApi.</li>
+</ul>
+
+<p>Notes:</p>
+
+<p>OXApi:</p>
+
+<ul>
+<li>    OXApi requires Visual Studio 2017 or higher</li>
+<li>    Only one configuration connection can be established at one time, so if the Webinterface is active, the OXApi will not be able to connect.</li>
+</ul>
+
+<p>UDP Streaming:</p>
+
+<ul>
+<li>    To use UDP Streaming, the desired streams should be activated by the OXApi or the Webinterface.</li>
+<li>    Ensure that the streaming target IP-Address is configured correctly.</li>
+<li>    If more than one OX should stream to the same computer, different ports should be used.</li>
+<li>    Keep in mind that the firewall may block an application from opening an UDP port.</li>
+</ul>
+
+<p>Version history:</p>
+
+<ul>
+<li>V1.0.0 First release.</li>
+<li>V1.1.0 Bugfix udp streaming, rework example</li>
+<li>V2.0.0 Small API changes, bugfixes</li>
+<li>V2.0.1 bugfixes (udp streamer)</li>
+<li>V2.0.2 Introduces 32 bit values for profile udp stream (OXx200-B20 and OXx200-B02)</li>
+</ul>
+
+<p><a name='T-Baumer-OXApi-Ox'></a></p>
+
+<h2>Ox <code>type</code></h2>
+
+<h5>Namespace</h5>
+
+<p>Baumer.OXApi</p>
+
+<h5>Summary</h5>
+
+<p>This class provides several APIs to get profile, measurement and configuration data from the sensor as well as set the sensor configurations.</p>
+
+<p><a name='P-Baumer-OXApi-Ox-TimeoutMs'></a></p>
+
+<h3>TimeoutMs <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>Gets or sets the timeout for websocket requests in ms.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureActiveUdpStreams-System-UInt32[]-'></a></p>
+
+<h3>ConfigureActiveUdpStreams(streamIds) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>This API is used to enable/disable the UDP streams. 
+Everytime the function is called, only the UDP streams that are passed to the function are enabled and all other streams are disabled.
+Send an empty array to disable all UDP streams. You can get the current status of the UDP streams using <a href="#M-Baumer-OXApi-Ox-GetActiveUdpStreams" title="Baumer.OXApi.Ox.GetActiveUdpStreams">GetActiveUdpStreams</a> API.</p>
+
+<p>```
+           Usage:
+           uint[] ids = { 0, 1 }; 
+           OX.ConfigureActiveUdpStreams(ids); //Stream with Id 0 and 1 will be enabled and other streams will be diabled.</p>
+
+<p>```</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>streamIds</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32[]" title="System.UInt32[]">System.UInt32[]</a></td>
+  <td>An array containing all UDP stream ids to be enabled.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureExposureTime-System-UInt32-'></a></p>
+
+<h3>ConfigureExposureTime(exposureTime) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Sets the laser exposure time(typically in µs). The exposure time should be within the limits provided by <a href="#M-Baumer-OXApi-Ox-GetExposureTimeLimits" title="Baumer.OXApi.Ox.GetExposureTimeLimits">GetExposureTimeLimits</a> API.
+You can read the current exposure time from the sensor using <a href="#M-Baumer-OXApi-Ox-GetExposureTime" title="Baumer.OXApi.Ox.GetExposureTime">GetExposureTime</a> API and the Exposure time units from <a href="#M-Baumer-OXApi-Ox-GetExposureTimeResolution" title="Baumer.OXApi.Ox.GetExposureTimeResolution">GetExposureTimeResolution</a> API.</p>
+
+<p>```
+           Usage: 
+           OX.ConfigureExposureTime(1000); //Sets the exposure time to 1000µs. </p>
+
+<p>```</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>exposureTime</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Exposure time to be set(typically in µs).</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureFieldOfView-System-Double,System-Double,System-Double,System-Double-'></a></p>
+
+<h3>ConfigureFieldOfView(limitLeft,limitRight,offset,height) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the sensor field of view (z-axis measured in height). Current field of view can be obtained from <a href="#M-Baumer-OXApi-Ox-GetFieldOfView" title="Baumer.OXApi.Ox.GetFieldOfView">GetFieldOfView</a> API.
+The unit and precesion of the x and z values of the field of view can be obtained from <a href="#M-Baumer-OXApi-Ox-GetFieldOfViewInfo" title="Baumer.OXApi.Ox.GetFieldOfViewInfo">GetFieldOfViewInfo</a> API.
+The min and max limits for x and z values of the field of view can be obtained from <a href="#M-Baumer-OXApi-Ox-GetFieldOfViewLimits" title="Baumer.OXApi.Ox.GetFieldOfViewLimits">GetFieldOfViewLimits</a> API.</p>
+
+<p><code>
+Usage:
+//To configure the field of view to -36mm to 25mm from left to right 
+//and 40mm to 10mm from top to bottom in height mode, use: 
+OX.ConfigureFieldOfView(-36.0, 25.0, 10.0, 30.0);
+</code></p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>limitLeft</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The left limit.</td>
+</tr>
+<tr>
+  <td>limitRight</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The right limit.</td>
+</tr>
+<tr>
+  <td>offset</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The offset.</td>
+</tr>
+<tr>
+  <td>height</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The height.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureFieldOfView-Baumer-OXApi-Types-FieldOfView-'></a></p>
+
+<h3>ConfigureFieldOfView(fieldOfView) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the field of view (z-axis measured in height). This API is another varient of <a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfView-System-Double,System-Double,System-Double,System-Double-" title="Baumer.OXApi.Ox.ConfigureFieldOfView(System.Double,System.Double,System.Double,System.Double)">ConfigureFieldOfView</a>.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>fieldOfView</td>
+  <td><a href="#T-Baumer-OXApi-Types-FieldOfView" title="Baumer.OXApi.Types.FieldOfView">Baumer.OXApi.Types.FieldOfView</a></td>
+  <td>An object containing the field of view configuration.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureFieldOfViewDistance-System-Double,System-Double,System-Double,System-Double-'></a></p>
+
+<h3>ConfigureFieldOfViewDistance(limitLeft,limitRight,near,far) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the field of view (z-axis measured in distance from the sensor). Current field of view can be obtained from <a href="#M-Baumer-OXApi-Ox-GetFieldOfViewDistance" title="Baumer.OXApi.Ox.GetFieldOfViewDistance">GetFieldOfViewDistance</a> API.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>limitLeft</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The left limit.</td>
+</tr>
+<tr>
+  <td>limitRight</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The right limit.</td>
+</tr>
+<tr>
+  <td>near</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The near distance.</td>
+</tr>
+<tr>
+  <td>far</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The far distance.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureLaserPower-System-Double-'></a></p>
+
+<h3>ConfigureLaserPower(factor) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the laser power to one of the predifined values.
+Use <a href="#M-Baumer-OXApi-Ox-GetLaserPowerLimits" title="Baumer.OXApi.Ox.GetLaserPowerLimits">GetLaserPowerLimits</a> API to get the list of predefined laser power values.
+Use <a href="#M-Baumer-OXApi-Ox-GetLaserPower" title="Baumer.OXApi.Ox.GetLaserPower">GetLaserPower</a> to get the current laser power.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>factor</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The laser power factor to be set.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureNetwork-System-Boolean,System-String,System-String,System-String-'></a></p>
+
+<h3>ConfigureNetwork(useDHCP,staticIP,subnetMask,gateway) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the network settings of an Ox sensor. <a href="#M-Baumer-OXApi-Ox-ConfigureNetwork-Baumer-OXApi-Types-NetworkConfiguration-" title="Baumer.OXApi.Ox.ConfigureNetwork(Baumer.OXApi.Types.NetworkConfiguration)">ConfigureNetwork</a> is an another varient of this API.
+Use <a href="#M-Baumer-OXApi-Ox-GetNetworkConfiguration" title="Baumer.OXApi.Ox.GetNetworkConfiguration">GetNetworkConfiguration</a> API to read the current network configuration from the sensor.</p>
+
+<p>```
+           Usage: 
+           OX.ConfigureNetwork(false, "192.168.0.250", "255.255.255.0", "192.168.0.1")</p>
+
+<p>```</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>useDHCP</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean" title="System.Boolean">System.Boolean</a></td>
+  <td>Enables or disables DHCP.</td>
+</tr>
+<tr>
+  <td>staticIP</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The static ip address to be used in case of failure of DHCP. E.g. 192.168.0.250</td>
+</tr>
+<tr>
+  <td>subnetMask</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The subnet mask of the network. E.g. 255.255.255.0</td>
+</tr>
+<tr>
+  <td>gateway</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The gateway address of the network. E.g. 192.168.0.1</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureNetwork-Baumer-OXApi-Types-NetworkConfiguration-'></a></p>
+
+<h3>ConfigureNetwork(configuration) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the network settings of an Ox sensor. <a href="#M-Baumer-OXApi-Ox-ConfigureNetwork-System-Boolean,System-String,System-String,System-String-" title="Baumer.OXApi.Ox.ConfigureNetwork(System.Boolean,System.String,System.String,System.String)">ConfigureNetwork</a> is an another varient of this API.
+Use <a href="#M-Baumer-OXApi-Ox-GetNetworkConfiguration" title="Baumer.OXApi.Ox.GetNetworkConfiguration">GetNetworkConfiguration</a> API to read the current network configuration from the sensor.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>configuration</td>
+  <td><a href="#T-Baumer-OXApi-Types-NetworkConfiguration" title="Baumer.OXApi.Types.NetworkConfiguration">Baumer.OXApi.Types.NetworkConfiguration</a></td>
+  <td>A NetworkConfiguration object containing DHCP state, static ip address, subnet mask, and gateway address.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureProcessInterfaces-System-Boolean,System-Boolean,System-Boolean,System-String,System-UInt32,System-UInt32,System-UInt32-'></a></p>
+
+<h3>ConfigureProcessInterfaces(enableModbus,enableOpcUa,enableUdpStreaming,udpDestinationIp,udpDestinationPort,realtimeProtocolId,ioLinkProcessDataLayout) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the sensors process interfaces. 
+Current state of the process interfaces can be obtained using <a href="#M-Baumer-OXApi-Ox-GetProcessInterfaces" title="Baumer.OXApi.Ox.GetProcessInterfaces">GetProcessInterfaces</a> API.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>enableModbus</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean" title="System.Boolean">System.Boolean</a></td>
+  <td>Enables or disables Modbus TCP server.</td>
+</tr>
+<tr>
+  <td>enableOpcUa</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean" title="System.Boolean">System.Boolean</a></td>
+  <td>Enables or disables OPC UA server.</td>
+</tr>
+<tr>
+  <td>enableUdpStreaming</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean" title="System.Boolean">System.Boolean</a></td>
+  <td>Enables or disables UDP streaming.</td>
+</tr>
+<tr>
+  <td>udpDestinationIp</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>Destination ip address for UDP streaming.</td>
+</tr>
+<tr>
+  <td>udpDestinationPort</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Destination port for UDP  streaming.</td>
+</tr>
+<tr>
+  <td>realtimeProtocolId</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Id of the realtime protocol. IDs can be obtained using <a href="#M-Baumer-OXApi-Ox-GetProcessInterfacesInfo" title="Baumer.OXApi.Ox.GetProcessInterfacesInfo">GetProcessInterfacesInfo</a> API.</td>
+</tr>
+<tr>
+  <td>ioLinkProcessDataLayout</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Id of the IO-Link process data layout. IDs can be obtained using <a href="#M-Baumer-OXApi-Ox-GetProcessInterfacesInfo" title="Baumer.OXApi.Ox.GetProcessInterfacesInfo">GetProcessInterfacesInfo</a> API.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureProfileAlgorithm-System-UInt32-'></a></p>
+
+<h3>ConfigureProfileAlgorithm(algorithmID) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the algorithm used for profile calculation. List of all avaliable algorithms can be obtained from <a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithms" title="Baumer.OXApi.Ox.GetProfileAlgorithms">GetProfileAlgorithms</a> API.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>algorithmID</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The id of the algorithm to be used for profile calculation.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureProfileAlgorithmParameters-System-UInt32,System-UInt32,System-UInt32,System-UInt32,System-UInt32-'></a></p>
+
+<h3>ConfigureProfileAlgorithmParameters(algorithmId,minPeakHeight,thresholdValue,thresholdType,minPeakWidth) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the parameters for a specific  profile computation algorithm. 
+The limits and units of the parameters can be obtained from <a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithmParamsLimits-System-UInt32-" title="Baumer.OXApi.Ox.GetProfileAlgorithmParamsLimits(System.UInt32)">GetProfileAlgorithmParamsLimits</a> and <a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithmParamsInfo" title="Baumer.OXApi.Ox.GetProfileAlgorithmParamsInfo">GetProfileAlgorithmParamsInfo</a> APIs respectively.
+Get parameters of an algorithm using <a href="#M-Baumer-OXApi-Ox-GetProfileAlgorithmParameters-System-UInt32-" title="Baumer.OXApi.Ox.GetProfileAlgorithmParameters(System.UInt32)">GetProfileAlgorithmParameters</a> API.</p>
+
+<p><code>
+Usage:
+OX.ConfigureProfileAlgorithmParameters(0, 20, 12, 1, 5);
+</code></p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>algorithmId</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The id of the algorithm to configure.</td>
+</tr>
+<tr>
+  <td>minPeakHeight</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Minimum peak height.</td>
+</tr>
+<tr>
+  <td>thresholdValue</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Threshold value.</td>
+</tr>
+<tr>
+  <td>thresholdType</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Type of the threshold.</td>
+</tr>
+<tr>
+  <td>minPeakWidth</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Minimum peak width.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureProfileFilter-System-Boolean,System-UInt32-'></a></p>
+
+<h3>ConfigureProfileFilter(movingAverageEnabled,movingAverageLength) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Enables/Disables and sets the length of the moving average filter which is used to filter the profile points. 
+The length should be between the min-max limits returned by <a href="#M-Baumer-OXApi-Ox-GetProfileFilterLimits" title="Baumer.OXApi.Ox.GetProfileFilterLimits">GetProfileFilterLimits</a> API.
+You can get the current filter status from <a href="#M-Baumer-OXApi-Ox-GetProfileFilter" title="Baumer.OXApi.Ox.GetProfileFilter">GetProfileFilter</a> API.</p>
+
+<p><code>
+Usage:
+OX.ConfigureProfileFilter(true, 5); //Enables the filter and sets the filter length to 5.
+</code></p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>movingAverageEnabled</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean" title="System.Boolean">System.Boolean</a></td>
+  <td>Enables or disables the profile filter.</td>
+</tr>
+<tr>
+  <td>movingAverageLength</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Length of the moving average filter.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureProfileFilter-Baumer-OXApi-Types-ProfileFilter-'></a></p>
+
+<h3>ConfigureProfileFilter(profileFilter) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Enables/Disables and sets the length of the moving average filter which is used to filter the profile points.
+Another varient of <a href="#M-Baumer-OXApi-Ox-ConfigureProfileFilter-System-Boolean,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileFilter(System.Boolean,System.UInt32)">ConfigureProfileFilter</a> API.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>profileFilter</td>
+  <td><a href="#T-Baumer-OXApi-Types-ProfileFilter" title="Baumer.OXApi.Types.ProfileFilter">Baumer.OXApi.Types.ProfileFilter</a></td>
+  <td>An object containing the profile filter settings.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureResampling-System-Boolean,System-Double-'></a></p>
+
+<h3>ConfigureResampling(enabled,gridValue) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Enables/Disables rasterization of the profile and sets the horizontal distance between the profile points to the given value.
+The resampling grid value should be between allowed min - max values retuned by the <a href="#M-Baumer-OXApi-Ox-GetResamplingInfo" title="Baumer.OXApi.Ox.GetResamplingInfo">GetResamplingInfo</a> API.
+The resampling active status can be queried using <a href="#M-Baumer-OXApi-Ox-IsResamplingEnabled" title="Baumer.OXApi.Ox.IsResamplingEnabled">IsResamplingEnabled</a> API and current grid value can be obtained using <a href="#M-Baumer-OXApi-Ox-GetResamplingGridValue" title="Baumer.OXApi.Ox.GetResamplingGridValue">GetResamplingGridValue</a> API.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>enabled</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean" title="System.Boolean">System.Boolean</a></td>
+  <td>Enables or disabled the profile resampling.</td>
+</tr>
+<tr>
+  <td>gridValue</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Double" title="System.Double">System.Double</a></td>
+  <td>The grid value used for the profile resampling.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureResolution-System-UInt32,System-UInt32-'></a></p>
+
+<h3>ConfigureResolution(xResolution,zResolution) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the x and z resolution. 
+The current resolution and available resolution values can be obtained from <a href="#M-Baumer-OXApi-Ox-GetResolution" title="Baumer.OXApi.Ox.GetResolution">GetResolution</a> and <a href="#M-Baumer-OXApi-Ox-GetResolutionInfo" title="Baumer.OXApi.Ox.GetResolutionInfo">GetResolutionInfo</a> APIs respectively.</p>
+
+<p><code>
+Usage:
+OX.ConfigureResolution(2, 4); //Sets the x resolution to 1/2 and  z resolution to 1/4
+</code></p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>xResolution</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The x resolution value to be set.</td>
+</tr>
+<tr>
+  <td>zResolution</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The z resolution value to be set.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureStartupSetup-System-UInt32-'></a></p>
+
+<h3>ConfigureStartupSetup(storageNumber) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Sets the startup parameter setup to given preset storage number.
+Get the current startup setup number using <a href="#M-Baumer-OXApi-Ox-GetStartupSetup" title="Baumer.OXApi.Ox.GetStartupSetup">GetStartupSetup</a> API.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>storageNumber</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The storage number.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureTimeServer-System-Boolean,System-String[]-'></a></p>
+
+<h3>ConfigureTimeServer(useNTP,timeServers) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Enables or disables the time synchronization. Sets the IP adresses of the NTP servers.
+Current configurations can be read from the sensor using <a href="#M-Baumer-OXApi-Ox-GetTimeServerConfiguration" title="Baumer.OXApi.Ox.GetTimeServerConfiguration">GetTimeServerConfiguration</a> API.</p>
+
+<p><code>
+Usage:
+string [] TimeServers ={"192.168.10.1","192.168.10.2"};
+OX.ConfigureTimeServer(true, TimeServers); //Enables the time servers and sets the server ip addresses
+</code></p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>useNTP</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.Boolean" title="System.Boolean">System.Boolean</a></td>
+  <td>Enable or disable time synchronization.</td>
+</tr>
+<tr>
+  <td>timeServers</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String[]" title="System.String[]">System.String[]</a></td>
+  <td>Array of strings containing IP adresses of the NTP servers.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureTrigger-System-UInt32,System-UInt32,System-UInt32,System-UInt32-'></a></p>
+
+<h3>ConfigureTrigger(triggerMode,modeOption,triggerTime,encoderSteps) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the trigger to a given trigger mode and option. The names and ids of the trigger modes supported by the sensor can be obtained from <a href="#M-Baumer-OXApi-Ox-GetTriggerInfo" title="Baumer.OXApi.Ox.GetTriggerInfo">GetTriggerInfo</a> API.
+The min-max limits for the trigger time and encoder steps can be obtained from <a href="#M-Baumer-OXApi-Ox-GetTriggerLimits" title="Baumer.OXApi.Ox.GetTriggerLimits">GetTriggerLimits</a> API.
+Use <a href="#M-Baumer-OXApi-Ox-GetTrigger" title="Baumer.OXApi.Ox.GetTrigger">GetTrigger</a> API to obtain current trigger settings.</p>
+
+<p>```
+           Usage:
+           OX.ConfigureTrigger(3, 0, 0, 0); //Software trigger mode id: 3
+           OX.Trigger(numberOfTriggers); //numberOfTriggers: Number of times the sensor triggers in a free run mode.</p>
+
+<p>```</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>triggerMode</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Id of the trigger mode to be set.</td>
+</tr>
+<tr>
+  <td>modeOption</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Id of the trigger mode option to be set.</td>
+</tr>
+<tr>
+  <td>triggerTime</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Trigger time to be used in fixedTime trigger mode.</td>
+</tr>
+<tr>
+  <td>encoderSteps</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Encoder steps to be used in encoder trigger mode.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureUdpStreams-System-UInt32[]-'></a></p>
+
+<h3>ConfigureUdpStreams(streamIds) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>This API is used to enable/disable the UDP streams. 
+Everytime the function is called, only the UDP streams that are passed to the function are enabled and all other streams are disabled.
+Send an empty array to disable all UDP streams. You can get the current status of the UDP streams using <a href="#M-Baumer-OXApi-Ox-GetActiveUdpStreams" title="Baumer.OXApi.Ox.GetActiveUdpStreams">GetActiveUdpStreams</a> API.</p>
+
+<p>```
+           Usage:
+           uint[] ids = { 0, 1 }; 
+           OX.ConfigureUdpStreams(ids); //Stream with Id 0 and 1 will be enabled and other streams will be diabled.</p>
+
+<p>```</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>streamIds</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32[]" title="System.UInt32[]">System.UInt32[]</a></td>
+  <td>An array containing all UDP stream ids to be enabled.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ConfigureZAxis-System-UInt32-'></a></p>
+
+<h3>ConfigureZAxis(zAxisId) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Configures the z-axis(e.g. distance or height). Use <a href="#M-Baumer-OXApi-Ox-GetAxesInfo" title="Baumer.OXApi.Ox.GetAxesInfo">GetAxesInfo</a> to obtain all supported z-axes.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>zAxisId</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Id of the z-axis to be set.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-Connect'></a></p>
+
+<h3>Connect() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Establishes a connection to the Ox sensor.
+Sensor can be configured or measurement data can be read only after establishing a connection to the sensor.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-Create-System-String,System-UInt32-'></a></p>
+
+<h3>Create(ipAddress,streamingPort) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>This API creates an object of the Ox sensor and returns it.
+The object created using this API can be used to connect and interact with the sensor.
+No connection will be established by this method. Use Connect() API on the Ox sensor object to connect.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>ipAddress</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The ip address of the sensor to connect, e.g. 192.168.0.250</td>
+</tr>
+<tr>
+  <td>streamingPort</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>UDP port used for streaming. Default port number is 1234</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-CreateStream'></a></p>
+
+<h3>CreateStream() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns a singleton instance of the streaming client to access profiles and measurements provided by UDP steaming service.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-Disconnect'></a></p>
+
+<h3>Disconnect() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Closes the connection to the sensor.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-EnableLongSession'></a></p>
+
+<h3>EnableLongSession() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Enables long session timeouts.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetActiveSetup'></a></p>
+
+<h3>GetActiveSetup() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the active setup number and its saved state.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetActiveUdpStreams'></a></p>
+
+<h3>GetActiveUdpStreams() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the IDs of all activated UDP streams. 
+The streams associated with the Ids  can be obtained using <a href="#M-Baumer-OXApi-Ox-GetUdpStreamingInfo" title="Baumer.OXApi.Ox.GetUdpStreamingInfo">GetUdpStreamingInfo</a> API. 
+UDP streams can be enabled/disabled using <a href="#M-Baumer-OXApi-Ox-ConfigureActiveUdpStreams-System-UInt32[]-" title="Baumer.OXApi.Ox.ConfigureActiveUdpStreams(System.UInt32[])">ConfigureActiveUdpStreams</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetAxesInfo'></a></p>
+
+<h3>GetAxesInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the ids and names of all supported z-axes (e.g., Distance, Height).
+To change to different Z axis mode, use <a href="#M-Baumer-OXApi-Ox-ConfigureZAxis-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureZAxis(System.UInt32)">ConfigureZAxis</a> API.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Z Axis Id</th>
+  <th>Z Axis Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>height</td>
+</tr>
+<tr>
+  <td>0</td>
+  <td>distance</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetExposureTime'></a></p>
+
+<h3>GetExposureTime() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current exposure time of the sensor(typically in µs). 
+One can get the exposure time units from <a href="#M-Baumer-OXApi-Ox-GetExposureTimeResolution" title="Baumer.OXApi.Ox.GetExposureTimeResolution">GetExposureTimeResolution</a> API.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureExposureTime-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureExposureTime(System.UInt32)">ConfigureExposureTime</a> to configure the exposure time.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetExposureTimeLimits'></a></p>
+
+<h3>GetExposureTimeLimits() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the minimum and maximum exposure time values(typically in µs) of the OX sensor.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureExposureTime-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureExposureTime(System.UInt32)">ConfigureExposureTime</a> to configure the exposure time.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Max Exposure Time</th>
+  <th>Min Exposure Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>3000</td>
+  <td>100</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetExposureTimeResolution'></a></p>
+
+<h3>GetExposureTimeResolution() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the resolution of the exposure time used in <a href="#M-Baumer-OXApi-Ox-ConfigureExposureTime-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureExposureTime(System.UInt32)">ConfigureExposureTime</a>, <a href="#M-Baumer-OXApi-Ox-GetExposureTime" title="Baumer.OXApi.Ox.GetExposureTime">GetExposureTime</a> and <a href="#M-Baumer-OXApi-Ox-GetExposureTimeLimits" title="Baumer.OXApi.Ox.GetExposureTimeLimits">GetExposureTimeLimits</a> APIs.</p>
+
+<p>```
+           Usage: 
+           String TimeResolutionUnit = OX.GetExposureTimeResolution(); //Returns µs for OX200 sensor. </p>
+
+<p>```</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetFieldOfView'></a></p>
+
+<h3>GetFieldOfView() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the actual field of view settings(z-axis measured in height) from the sensor containing left limit, right limit, height and offset.
+The field of view can be configured using <a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfView-System-Double,System-Double,System-Double,System-Double-" title="Baumer.OXApi.Ox.ConfigureFieldOfView(System.Double,System.Double,System.Double,System.Double)">ConfigureFieldOfView</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetFieldOfViewDistance'></a></p>
+
+<h3>GetFieldOfViewDistance() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the actual field of view settings(z-axis measured in distance from the sensor) from the sensor.
+It contains left limit, right limit, near distance and far distance.
+One can configure field of view in distance mode using <a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfViewDistance-System-Double,System-Double,System-Double,System-Double-" title="Baumer.OXApi.Ox.ConfigureFieldOfViewDistance(System.Double,System.Double,System.Double,System.Double)">ConfigureFieldOfViewDistance</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetFieldOfViewInfo'></a></p>
+
+<h3>GetFieldOfViewInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the x and z axes units and x and z axes precision for the field of view.
+One can configure the Field of View using <a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfView-System-Double,System-Double,System-Double,System-Double-" title="Baumer.OXApi.Ox.ConfigureFieldOfView(System.Double,System.Double,System.Double,System.Double)">ConfigureFieldOfView</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetFieldOfViewLimits'></a></p>
+
+<h3>GetFieldOfViewLimits() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the actual field of view limits from the sensor. The returned object contains left limit, right limit, min width, min height and max height of the field of view.
+Use <a href="#M-Baumer-OXApi-Ox-GetFieldOfViewInfo" title="Baumer.OXApi.Ox.GetFieldOfViewInfo">GetFieldOfViewInfo</a> to obtain precison as well as units of x and z axes limits.
+One can configure the Field of View using <a href="#M-Baumer-OXApi-Ox-ConfigureFieldOfView-System-Double,System-Double,System-Double,System-Double-" title="Baumer.OXApi.Ox.ConfigureFieldOfView(System.Double,System.Double,System.Double,System.Double)">ConfigureFieldOfView</a> API.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th></th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>FOV Max Height(Z)</strong></td>
+  <td>400</td>
+</tr>
+<tr>
+  <td><strong>FOV Min Height(Z)</strong></td>
+  <td>5</td>
+</tr>
+<tr>
+  <td><strong>FOV Z Precision</strong></td>
+  <td>10</td>
+</tr>
+<tr>
+  <td><strong>FOV Z Unit</strong></td>
+  <td>mm</td>
+</tr>
+<tr>
+  <td><strong>FOV Max X</strong></td>
+  <td>34</td>
+</tr>
+<tr>
+  <td><strong>FOV Min X</strong></td>
+  <td>-34</td>
+</tr>
+<tr>
+  <td><strong>FOV Min Width(Delta X)</strong></td>
+  <td>5</td>
+</tr>
+<tr>
+  <td><strong>FOV X Precision</strong></td>
+  <td>10</td>
+</tr>
+<tr>
+  <td><strong>FOV X Unit</strong></td>
+  <td>mm</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetImage'></a></p>
+
+<h3>GetImage() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the last measured raw image from the sensor containing a pixel array (integers 0-255), ROI height, ROI width, Row and Column binning and offset.</p>
+
+<p><code>
+Usage:
+var image = OX.GetImage();
+var pixels = image.Pixels; //Array of grayscale pixels
+var roiHeight = image.RoiHeight;
+var roiWidth = image.RoiWidth;
+var rowBinning = image.RowBinning;
+var rowOffset = image.RowOffset;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetImageInfo'></a></p>
+
+<h3>GetImageInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns information about the image sensor height, width and max ROI pixel count.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetIntensityProfile'></a></p>
+
+<h3>GetIntensityProfile() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the last measured intensity profile from the sensor. 
+This API delivers intensity information of the profile points in addition to the information returned by <a href="#M-Baumer-OXApi-Ox-GetProfile" title="Baumer.OXApi.Ox.GetProfile">GetProfile</a> API.</p>
+
+<p><code>
+Usage:
+var profile = OX.GetIntensityProfile();
+var xdata = ( profile.X[i] + profile.XStart ) / profile.Precision;
+var zdata = profile.Z[i] / profile.Precision;
+var intensity = profile.I[i];
+var profile_info = OX.GetProfileInfo();
+var xunits = profile_info.XUnits;
+var zunits = profile_info.ZUnits; 
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetLaserPower'></a></p>
+
+<h3>GetLaserPower() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current laser power value.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureLaserPower-System-Double-" title="Baumer.OXApi.Ox.ConfigureLaserPower(System.Double)">ConfigureLaserPower</a> to configure laser power.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetLaserPowerInfo'></a></p>
+
+<h3>GetLaserPowerInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns laser power factor precision and unit.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetLaserPowerLimits'></a></p>
+
+<h3>GetLaserPowerLimits() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns all predefined laser power factors along with the min and max power factor values.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureLaserPower-System-Double-" title="Baumer.OXApi.Ox.ConfigureLaserPower(System.Double)">ConfigureLaserPower</a> to change the laser power factor.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Max Power</th>
+  <th>Min Power</th>
+  <th>Predefined Factors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>3</td>
+  <td>0,5</td>
+  <td>3, 2, 1, 0,5,</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetMeasurement'></a></p>
+
+<h3>GetMeasurement() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns an array of latest measurement values, digital output values, encoder value, alarm status, measurement rate, quality id and timestamp.
+Use <a href="#M-Baumer-OXApi-Ox-GetMeasurementInfo" title="Baumer.OXApi.Ox.GetMeasurementInfo">GetMeasurementInfo</a> API to know more about QualityId and units of TimeStamp.
+Use <a href="#M-Baumer-OXApi-Ox-GetMeasurementValuesInfo" title="Baumer.OXApi.Ox.GetMeasurementValuesInfo">GetMeasurementValuesInfo</a> API to know more about tool name, id, mode and other metadata associated with the measurement
+results returned by this API.</p>
+
+<p><code>
+Usage:
+var MeasValues = OX.GetMeasurement();
+var MeasResults = MeasValues.Values //Double array containing values of enabled tools
+var DigitalOuts = MeasValues.DigitalOuts; // Boolian array containing digital outputs
+var Alarm = MeasValues.Alarm; //Alarm status
+var TimeStamp = MeasValues.TimeStamp;
+var QualityId = MeasValues.QualityId;
+var MeasurementRate = MeasValues.MeasurementRate;
+var ConfigMode = MeasValues.ConfigMode;
+var EncoderValue = MeasValues.EncoderValue;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetMeasurementInfo'></a></p>
+
+<h3>GetMeasurementInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the information about measurements such as time stamp units, measurement rate units,
+measurement rate precision and all quality value names and ids.</p>
+
+<p><code>
+Usage:
+var MeasInfo = OX.GetMeasurementInfo();
+var QualityValues = MeasInfo.QualityValues; //Array of Id and Name pair.
+var TimeStampUnits = MeasInfo.TimeStampUnits; //Array of time stamp units.
+var MeasRateUnit = MeasInfo.MeasurementRateUnit;
+var MeasRatePrecision = MeasInfo.MeasurementRatePrecision;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetMeasurementValuesInfo'></a></p>
+
+<h3>GetMeasurementValuesInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the information about the measurement values such as Tool ID, Tool Mode, Tool Name, Unit, Precision and Limits.</p>
+
+<p><code>
+Usage:
+var MeasValuesInfo = OX.GetMeasurementValuesInfo();
+var MeasTypes = MeasValuesInfo.MeasurementTypes; //Contains information about all active measurements.
+//Use foreach loop to iterate over all active measurements.
+var AnActiveMeas = MeasTypes[0];
+var MeasName = AnActiveMeas.Name;
+var MeasMode = AnActiveMeas.Mode;
+var MeasTool = AnActiveMeas.Tool;
+var MeasToolID = AnActiveMeas.ToolId;
+var MeasUnit = AnActiveMeas.Unit;
+var MeasPrecision = AnActiveMeas.Precision;
+var MeasMinValue = AnActiveMeas.Minimum;
+var MeasMaxValue = AnActiveMeas.Maximum;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetNetworkConfiguration'></a></p>
+
+<h3>GetNetworkConfiguration() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current network configuration of the Ox sensor.
+The returned object contains DHCP state, static ip address, subnet mask, gateway address and mac address.
+You can set the network configuration using <a href="#M-Baumer-OXApi-Ox-ConfigureNetwork-System-Boolean,System-String,System-String,System-String-" title="Baumer.OXApi.Ox.ConfigureNetwork(System.Boolean,System.String,System.String,System.String)">ConfigureNetwork</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetNumberOfSetups'></a></p>
+
+<h3>GetNumberOfSetups() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the total number of sensor configuration preset storages available in the sensor.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetNumberOfTimeServers'></a></p>
+
+<h3>GetNumberOfTimeServers() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the maximum number of time servers supported by the sensor for time synchronization.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetParameterSetup-System-UInt32-'></a></p>
+
+<h3>GetParameterSetup(storageNumber) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the sensor configuration data saved in a given preset number as a json string.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>storageNumber</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The storage number.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProcessInterfaces'></a></p>
+
+<h3>GetProcessInterfaces() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current state of all sensor process interfaces like modbus and OPCUA state,
+UDP streaming status, destination UDP port and ip address. You can configure process interfaces using <a href="#M-Baumer-OXApi-Ox-ConfigureProcessInterfaces-System-Boolean,System-Boolean,System-Boolean,System-String,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProcessInterfaces(System.Boolean,System.Boolean,System.Boolean,System.String,System.UInt32,System.UInt32,System.UInt32)">ConfigureProcessInterfaces</a></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProcessInterfacesInfo'></a></p>
+
+<h3>GetProcessInterfacesInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the ids and names of the available real time protocols(including the id to disable real time communication).</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Process Id</th>
+  <th>Process Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0</td>
+  <td>Disabled</td>
+</tr>
+<tr>
+  <td>1</td>
+  <td>Profinet</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>EtherNetIP</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfile'></a></p>
+
+<h3>GetProfile() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the last measured profile from the sensor. 
+In addition to X and Z coordinate values of the profile points, the returned object also contains profile length, quality id, xstart, precision, and timestamp.</p>
+
+<p>```
+           Usage:
+           var profile = OX.GetProfile();
+           var xdata = ( profile.X[i] + profile.XStart ) / profile.Precision;
+           var zdata = profile.Z[i] / profile.Precision;
+           var profile<em>info = OX.GetProfileInfo();
+           var xunits = profile</em>info.XUnits;
+           var zunits = profile_info.ZUnits; </p>
+
+<p>```</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileAlgorithm'></a></p>
+
+<h3>GetProfileAlgorithm() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns an id of the algorithm used for profile calculation.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureProfileAlgorithm-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileAlgorithm(System.UInt32)">ConfigureProfileAlgorithm</a> to change the profile algorithm.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileAlgorithmParameters-System-UInt32-'></a></p>
+
+<h3>GetProfileAlgorithmParameters(algorithmId) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current configuration parameter values of a specific profile computation algorithm.
+Configure profile algorithm parameters using <a href="#M-Baumer-OXApi-Ox-ConfigureProfileAlgorithmParameters-System-UInt32,System-UInt32,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileAlgorithmParameters(System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ConfigureProfileAlgorithmParameters</a> API.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>algorithmId</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The id of the algorithm.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileAlgorithmParamsInfo'></a></p>
+
+<h3>GetProfileAlgorithmParamsInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the units of all profile algorithm parameters.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileAlgorithmParamsLimits-System-UInt32-'></a></p>
+
+<h3>GetProfileAlgorithmParamsLimits(algorithmId) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns all parameters' min-max limits for a specific profile computation algorithm. 
+Configure Profile Algorithm Params using <a href="#M-Baumer-OXApi-Ox-ConfigureProfileAlgorithmParameters-System-UInt32,System-UInt32,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileAlgorithmParameters(System.UInt32,System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ConfigureProfileAlgorithmParameters</a> API.</p>
+
+<p><code>
+Usage:
+var ParamLimits = OX.GetProfileAlgorithmParamsLimits(algorithmId);
+var Limits = ParamLimits.Limits;
+var MinPeakHeightParamMin = Limits.MinPeakHeight.Minimum;
+var MinPeakHeightParamMax = Limits.MinPeakHeight.Maximum;
+var MinPeakWidthParamMin = Limits.MinPeakWidth.Minimum;
+var MinPeakWidthParamMax = Limits.MinPeakWidth.Maximum;
+var ThresholdValueMin = Limits.ThresholdValue.Minimum;
+var ThresholdValueMax = Limits.ThresholdValue.Maximum;
+var ThresholdTypes = Limits.ThresholdTypes; //Returns array containing names and ids of supported types.
+</code></p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>algorithmId</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The profile computation algorithm id.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileAlgorithms'></a></p>
+
+<h3>GetProfileAlgorithms() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns an object containing a list of names and ids of the profile algorithms supported by the sensor.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureProfileAlgorithm-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileAlgorithm(System.UInt32)">ConfigureProfileAlgorithm</a> to use a different profile algorithm.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Algorithm Id</th>
+  <th>Algorithm Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0</td>
+  <td>max</td>
+</tr>
+<tr>
+  <td>1</td>
+  <td>upper</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>lower</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileFilter'></a></p>
+
+<h3>GetProfileFilter() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns a profile filter object containing the active status and length of the moving average filter.
+The filter can be configured using <a href="#M-Baumer-OXApi-Ox-ConfigureProfileFilter-System-Boolean,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileFilter(System.Boolean,System.UInt32)">ConfigureProfileFilter</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileFilterLimits'></a></p>
+
+<h3>GetProfileFilterLimits() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns an object containing minimum and maximum allowed profle filter length.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureProfileFilter-System-Boolean,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureProfileFilter(System.Boolean,System.UInt32)">ConfigureProfileFilter</a> to configure the profile filter.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Max Filter Length</th>
+  <th>Min Filter Length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>15</td>
+  <td>3</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetProfileInfo'></a></p>
+
+<h3>GetProfileInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns information such as max length of the profile(in number of points), x and z axes units of the profile.</p>
+
+<p><code>
+Usage:
+var ProfileInformation = OX.GetProfileInfo();
+uint MaxLength = ProfileInformation.MaxLength;
+String XUnit = ProfileInformation.XUnit;
+String ZUnit = ProfileInformation.ZUnit;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetResamplingGridValue'></a></p>
+
+<h3>GetResamplingGridValue() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current resampling grid value and active status of the profile resampling.
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureResampling-System-Boolean,System-Double-" title="Baumer.OXApi.Ox.ConfigureResampling(System.Boolean,System.Double)">ConfigureResampling</a> to enable/disable resampling and change the resampling grid value. 
+The unit and precision of the returned grid value can be obtained using <a href="#M-Baumer-OXApi-Ox-GetResamplingInfo" title="Baumer.OXApi.Ox.GetResamplingInfo">GetResamplingInfo</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetResamplingInfo'></a></p>
+
+<h3>GetResamplingInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the precision, unit, allowed max and min values for the resampling grid value.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th></th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Max Grid Value</strong></td>
+  <td>2</td>
+</tr>
+<tr>
+  <td><strong>Min Grid Value</strong></td>
+  <td>0,2</td>
+</tr>
+<tr>
+  <td><strong>Grid Precision</strong></td>
+  <td>10</td>
+</tr>
+<tr>
+  <td><strong>Grid Value Unit</strong></td>
+  <td>mm</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetResolution'></a></p>
+
+<h3>GetResolution() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the  current x and z resolution values. If the returned value is n then it implies that the current resolution is 1/n times that of max resolution.
+One can configure resolution using <a href="#M-Baumer-OXApi-Ox-ConfigureResolution-System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureResolution(System.UInt32,System.UInt32)">ConfigureResolution</a> API.</p>
+
+<p><code>
+Usage:
+var resolution = OX.GetResolution();
+uint XResolution = resolution.XResolution;
+uint ZResolution = resolution.ZResolution;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetResolutionInfo'></a></p>
+
+<h3>GetResolutionInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the list of all available x and z resolutions.
+One can configure resolution using <a href="#M-Baumer-OXApi-Ox-ConfigureResolution-System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureResolution(System.UInt32,System.UInt32)">ConfigureResolution</a></p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>X Resolution</th>
+  <th>Z Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>2, 4,</td>
+  <td>1, 2, 4,</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetSecondaryData'></a></p>
+
+<h3>GetSecondaryData() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns secondary data such as Temperature, Boot-Up counts, Up Time, Operating Voltage and Operation Time.</p>
+
+<p><code>
+Usage:
+var SecondaryData = OX.GetSecondaryData();
+uint BootUpCounter = SecondaryData.BootUpCounter;
+uint OperatingTime = SecondaryData.OperatingTime;
+uint UpTime = SecondaryData.UpTime;
+uint Temperature = SecondaryData.Temperature;
+uint OperatingVoltage = SecondaryData.OperatingVoltage;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetSensorInfo'></a></p>
+
+<h3>GetSensorInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns sensor information such as type of the sensor, serial number, vendor name and the current firmware versions.</p>
+
+<p><code>
+Usage:
+var SensorInfo = OX.GetSensorInfo();
+String SensorType = SensorInfo.Type;
+String SerialNumber = SensorInfo.SerialNumber;
+String VendorName = SensorInfo.VendorName;
+String AggregateVersion = SensorInfo.AggregateVersion;
+String SoftwareVersion = SensorInfo.SoftwareVersion;
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetStartupSetup'></a></p>
+
+<h3>GetStartupSetup() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the parameter setup number which is loaded during startup of the sensor.
+Change the startup setup number using <a href="#M-Baumer-OXApi-Ox-ConfigureStartupSetup-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureStartupSetup(System.UInt32)">ConfigureStartupSetup</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetTimeServerConfiguration'></a></p>
+
+<h3>GetTimeServerConfiguration() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current NTP time server configuration containing NTP state and time server IP adresses.
+The state or adresses of the time servers can be set using <a href="#M-Baumer-OXApi-Ox-ConfigureTimeServer-System-Boolean,System-String[]-" title="Baumer.OXApi.Ox.ConfigureTimeServer(System.Boolean,System.String[])">ConfigureTimeServer</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetTrigger'></a></p>
+
+<h3>GetTrigger() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current trigger configuration containing encode steps, trigger mode, trigger mode option and trigger time.
+Trigger mode can be configured using <a href="#M-Baumer-OXApi-Ox-ConfigureTrigger-System-UInt32,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureTrigger(System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ConfigureTrigger</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-GetTriggerInfo'></a></p>
+
+<h3>GetTriggerInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the information about all possible trigger configurations (Names and Ids of all trigger modes and supported trigger options).
+To configure the trigger, use <a href="#M-Baumer-OXApi-Ox-ConfigureTrigger-System-UInt32,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureTrigger(System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ConfigureTrigger</a> API.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Mode Id</th>
+  <th>Mode Name</th>
+  <th>Supported Options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0</td>
+  <td>freerun</td>
+  <td>1</td>
+</tr>
+<tr>
+  <td>1</td>
+  <td>extSingleShot</td>
+  <td>4</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>fixedTime</td>
+  <td>1</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>encoder</td>
+  <td>1</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>software</td>
+  <td></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th>Option Id</th>
+  <th>Option Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0</td>
+  <td>ignoreSyncIn</td>
+</tr>
+<tr>
+  <td>1</td>
+  <td>runWhileSyncInLow</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>runWhileSyncInHigh</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>risingEdge</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td>fallingEdge</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td>bothEdges</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetTriggerLimits'></a></p>
+
+<h3>GetTriggerLimits() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the min - max limits for trigger time and encoder steps (used in fixed time trigger and encoder trigger modes).</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>Property</th>
+  <th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><strong>Max Encoder Steps</strong></td>
+  <td>65536</td>
+</tr>
+<tr>
+  <td><strong>Min Encoder Steps</strong></td>
+  <td>3</td>
+</tr>
+<tr>
+  <td><strong>Max Interval Time</strong></td>
+  <td>4000000</td>
+</tr>
+<tr>
+  <td><strong>Min Interval Time</strong></td>
+  <td>500</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetUdpStreamingInfo'></a></p>
+
+<h3>GetUdpStreamingInfo() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns all available UDP stream names and Ids supported by the sensor. 
+Use <a href="#M-Baumer-OXApi-Ox-GetActiveUdpStreams" title="Baumer.OXApi.Ox.GetActiveUdpStreams">GetActiveUdpStreams</a> API to obtain IDs of all active UDP streams. 
+Use <a href="#M-Baumer-OXApi-Ox-ConfigureActiveUdpStreams-System-UInt32[]-" title="Baumer.OXApi.Ox.ConfigureActiveUdpStreams(System.UInt32[])">ConfigureActiveUdpStreams</a> to enable/disable UDP streams.</p>
+
+<p>E.g.: Information below is fetched from OX200 sensor with the help of this API.</p>
+
+<table>
+<thead>
+<tr>
+  <th>UDP Stream Id</th>
+  <th>UDP Stream Name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>0</td>
+  <td>zProfile</td>
+</tr>
+<tr>
+  <td>1</td>
+  <td>intensityProfile</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td>allMeasurementValues</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-GetZAxis'></a></p>
+
+<h3>GetZAxis() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns an id of the current z-axis. Use <a href="#M-Baumer-OXApi-Ox-GetAxesInfo" title="Baumer.OXApi.Ox.GetAxesInfo">GetAxesInfo</a> to check the corresponding name.
+To change to different z-axis mode, use <a href="#M-Baumer-OXApi-Ox-ConfigureZAxis-System-UInt32-" title="Baumer.OXApi.Ox.ConfigureZAxis(System.UInt32)">ConfigureZAxis</a> API.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-IsProfileFilterEnabled'></a></p>
+
+<h3>IsProfileFilterEnabled() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns active status of the profile filter.</p>
+
+<p><code>
+Usage:
+if(!OX.IsProfileFilterEnabled())
+{
+    OX.ConfigureProfileFilter(true, 5); 
+}
+</code></p>
+
+<p><a name='M-Baumer-OXApi-Ox-IsResamplingEnabled'></a></p>
+
+<h3>IsResamplingEnabled() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the current status of the profile resampling.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-LoadParameterSetup-System-UInt32-'></a></p>
+
+<h3>LoadParameterSetup(storageNumber) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Loads the sensor configuration from a given parameter setup.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>storageNumber</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The storage number.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-Login-System-String,System-String-'></a></p>
+
+<h3>Login(role,password) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>This API is used to enter into admin mode in order to change the sensor configuration.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>role</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The requested role. Default value is "admin".</td>
+</tr>
+<tr>
+  <td>password</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The password for the requested role. Default value is "".</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-Logout'></a></p>
+
+<h3>Logout() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>This API is used to leave admin mode.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-ReadAllSettings'></a></p>
+
+<h3>ReadAllSettings() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Reads all settings from the sensor.</p>
+
+<h5>Returns</h5>
+
+<p>An encoded string containing all settings.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-ReadSetting-System-UInt32-'></a></p>
+
+<h3>ReadSetting(storageNumber) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Reads a setting from the sensor.</p>
+
+<h5>Returns</h5>
+
+<p>ConfigureProfileAlgorithmParameters
+An encoded string containing one setting.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>storageNumber</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The storage number. "0" specifies device configuration parameters.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-ResetAllSettings'></a></p>
+
+<h3>ResetAllSettings() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Clears all saved parameter setups.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-ResetSettings-System-UInt32-'></a></p>
+
+<h3>ResetSettings() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Clears a saved parameter setup.</p>
+
+<p><a name='M-Baumer-OXApi-Ox-StoreParameterSetup-System-UInt32-'></a></p>
+
+<h3>StoreParameterSetup(storageNumber) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Stores the actual sensor configuration to the desired storage.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>storageNumber</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The storage number.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-Trigger-System-UInt32-'></a></p>
+
+<h3>Trigger(count) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Generates a software trigger. The profiles are acquired in free running mode. 
+The trigger should be configured to software mode using <a href="#M-Baumer-OXApi-Ox-ConfigureTrigger-System-UInt32,System-UInt32,System-UInt32,System-UInt32-" title="Baumer.OXApi.Ox.ConfigureTrigger(System.UInt32,System.UInt32,System.UInt32,System.UInt32)">ConfigureTrigger</a> before using this API</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>count</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>Number of trigger events.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-WriteAllSettings-System-String-'></a></p>
+
+<h3>WriteAllSettings(settings) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Writes all settings to the sensor.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>settings</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The settings to write as encoded string (e.g. read by ReadAllSettings).</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='M-Baumer-OXApi-Ox-WriteSetting-System-String,System-UInt32-'></a></p>
+
+<h3>WriteSetting(setting,storageNumber) <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Writes a settings to the sensor.</p>
+
+<h5>Parameters</h5>
+
+<table>
+<thead>
+<tr>
+  <th>Name</th>
+  <th>Type</th>
+  <th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>setting</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.String" title="System.String">System.String</a></td>
+  <td>The setting to write as encoded string (e.g. read by ReadSetting).</td>
+</tr>
+<tr>
+  <td>storageNumber</td>
+  <td><a href="http://msdn.microsoft.com/query/dev14.query?appId=Dev14IDEF1&l=EN-US&k=k:System.UInt32" title="System.UInt32">System.UInt32</a></td>
+  <td>The storage number. "0" specifies device configuration parameters.</td>
+</tr>
+</tbody>
+</table>
+
+<p><a name='T-Baumer-OXApi-UdpStreaming-OxStream'></a></p>
+
+<h2>OxStream <code>type</code></h2>
+
+<h5>Namespace</h5>
+
+<p>Baumer.OXApi.UdpStreaming</p>
+
+<h5>Summary</h5>
+
+<p>This class is used to read data from active UPD streams using various class APIs.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-ErrorOccured'></a></p>
+
+<h3>ErrorOccured <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns true if at least one error occured.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-FullQueueHandling'></a></p>
+
+<h3>FullQueueHandling <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>Defines the behavior if the queue is full and new data arrives.
+This enum can be set to 'DropOldest' or 'IgnoreNew' value.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-MeasurementAvailable'></a></p>
+
+<h3>MeasurementAvailable <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns true if at least one measurement is available.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-MeasurementCount'></a></p>
+
+<h3>MeasurementCount <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>The number of queued measurements.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-ProfileAvailable'></a></p>
+
+<h3>ProfileAvailable <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns true if at least one profile is available.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-ProfileCount'></a></p>
+
+<h3>ProfileCount <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>The number of queued profiles.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-QueueSize'></a></p>
+
+<h3>QueueSize <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>The length of all queues. The default value is 10000.</p>
+
+<p><a name='P-Baumer-OXApi-UdpStreaming-OxStream-ReceiveBufferSize'></a></p>
+
+<h3>ReceiveBufferSize <code>property</code></h3>
+
+<h5>Summary</h5>
+
+<p>The size of the receive buffer in bytes
+If packets are lost increase this buffer size, the size depends
+on the used system and its load</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-ClearMeasurementQueue'></a></p>
+
+<h3>ClearMeasurementQueue() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Clears the measurement queue.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-ClearProfileQueue'></a></p>
+
+<h3>ClearProfileQueue() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Clears the profile queue.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-Close'></a></p>
+
+<h3>Close() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Closes the stream.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-Dispose'></a></p>
+
+<h3>Dispose() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Disposes the instance and releases all resources.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-ReadError'></a></p>
+
+<h3>ReadError() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns one error from the queue (the error will be removed from the queue).
+Throws an exception if the queue is empty.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-ReadMeasurement'></a></p>
+
+<h3>ReadMeasurement() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns oldest measurement from the queue (the measurement will be removed from the queue).
+Throws an exception if the queue is empty.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-ReadProfile'></a></p>
+
+<h3>ReadProfile() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Returns the oldest profile from the queue (the profile will be removed from the queue).
+Throws an exception if the queue is empty.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-Start'></a></p>
+
+<h3>Start() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Starts reading data from the streaming sensor.</p>
+
+<p><a name='M-Baumer-OXApi-UdpStreaming-OxStream-Stop'></a></p>
+
+<h3>Stop() <code>method</code></h3>
+
+<h5>Summary</h5>
+
+<p>Stops reading data from the streaming sensor.</p>
+
+
+</body>
+</html>
