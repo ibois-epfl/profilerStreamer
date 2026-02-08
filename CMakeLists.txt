@@ -3,6 +3,19 @@ project (profilerStreamer)
 
 set (CMAKE_CXX_STANDARD 17)
 
+# to align with open62541' s CMakeLists.txt
+if(MSVC)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /W1") # Reduce warnings level
+    add_compile_options(
+        $<$<CONFIG:>:/MD>
+        $<$<CONFIG:Debug>:/MDd>
+        $<$<CONFIG:Release>:/MD>
+    )
+else()
+    add_compile_options(-Wno-unused-variable -Wno-unused-function)
+    add_compile_options(-Wno-gnu-zero-variadic-macro-arguments) # silence warning for the check library
+endif()
+
 include (CMakeFunctions.cmake)
 update_submodules()
 
@@ -14,6 +27,9 @@ link_directories(${OXAPI_ROOT_DIR}/libs/)
 # boost
 add_subdirectory( ${PROJECT_SOURCE_DIR}/3rd_party/boost)
 
+# open62541
+add_subdirectory( ${PROJECT_SOURCE_DIR}/3rd_party/open62541)
+
 # Threads
 find_package(Threads)
 
@@ -21,9 +37,9 @@ add_executable(profilerStreamer src/cpp/test_exec.cc)
 target_include_directories(profilerStreamer PRIVATE ${OXAPI_ROOT_DIR}/include/)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_link_libraries(profilerStreamer PRIVATE Boost::system Boost::thread Boost::coroutine OXApi_debug-vc141-x64 Threads::Threads)
+    target_link_libraries(profilerStreamer PRIVATE Boost::system Boost::thread Boost::coroutine OXApi_debug-vc141-x64 open62541 Threads::Threads)
     file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi_debug-vc141-x64.dll" DESTINATION "${CMAKE_BINARY_DIR}")
 else()
-    target_link_libraries(profilerStreamer PRIVATE Boost::system Boost::thread Boost::coroutine OXApi-vc141-x64 Threads::Threads)
+    target_link_libraries(profilerStreamer PRIVATE Boost::system Boost::thread Boost::coroutine OXApi-vc141-x64 open62541 Threads::Threads)
     file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi-vc141-x64.dll" DESTINATION "${CMAKE_BINARY_DIR}")
 endif()
