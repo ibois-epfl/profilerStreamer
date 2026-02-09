@@ -1,10 +1,13 @@
 # profilerStreamer
+
+<center><img src="./assets/2026_02_09_profiler_usage.gif" width="40%"></center>
+
 profilerStreamer is a small project to combine 2D laser profiler data from Baumer with 1D sick distance sensor to recreate 3D point cloud of timber pieces in a CNC.
 
 The hardware used in this instance is:
 
 - [Baumer OXP200 profiler](https://www.baumer.com/ch/fr/apercu-des-produits/smart-vision/capteurs-de-profil/ox-laser-bleu/oxp200-b20c-004/p/46978)
-- [Sick DT50-2B215252 distance sensor](https://www.sick.com/ch/en/catalog/products/distance-sensors/laser-distance-sensors/dx50-2/dt50-2b215252/p/p356454?tab=detail)
+- [Sick DT35-B15251 distance sensor](https://www.sick.com/ch/en/catalog/products/distance-sensors/laser-distance-sensors/dx35/dt35-b15251/p/p295353?tab=detail)
 
 The setup is illustrated hereunder:
 <center><img src="./assets/2026_02_09_Profiler_setup.svg" width="50%"></center>
