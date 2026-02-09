@@ -46,7 +46,7 @@ To run the code successfully, you must know:
 
 
 ## Usage
-The code developped here is intended to be developped into a grasshopper component. In the mean time, to use this code in its current form, you need a Windows computer with [git](https://git-scm.com/) and [cmake](https://cmake.org/) installed.
+The code developped here is intended to be developped into a grasshopper component. In the mean time, to use this code in its current form, you need a Windows computer with [git](https://git-scm.com/) and [cmake](https://cmake.org/) installed. For compatibility with the OXAPI which is pre-compiled, you need to compile using MSVC, which is installed on your computer if you install Visual Studio. It takes a lot of space but it seems the most straight-forward way to make it work. The following assumes you have the necessary tools installed through the Visual Studio installation.
 Run in a terminal in the root of this folder:
 ```bash
 mrdir build
