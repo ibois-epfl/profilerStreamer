@@ -4,3 +4,6 @@
 [submodule "3rd_party/open62541"]
 	path = 3rd_party/open62541
 	url = https://github.com/open62541/open62541.git
+[submodule "3rd_party/submodule-open3d"]
+	path = 3rd_party/submodule-open3d
+	url = https://github.com/diffCheckOrg/submodule-open3d.git
