@@ -63,12 +63,15 @@ namespace ProfilerStreaming::Communicate
         return true; // Placeholder return value
     }
 
-    std::pair<std::vector<Eigen::Vector3d>, std::chrono::time_point<std::chrono::system_clock>> TCPCommunicator::GetDataWithTimestamp()
+    ProfilerStreaming::SpatialData::PointCloudWithTimestamp TCPCommunicator::GetDataWithTimestamp()
     {
         if (this->deviceType == DeviceType::OX)
         {
             if (!this->communicationHandle)
+            {
                 throw std::runtime_error("Communication handle is not initialized");
+            }
+
             Baumer::OXApi::Types::Profile profile = this->communicationHandle->GetProfile();
             auto timestamp = std::chrono::system_clock::now();
             std::vector<Eigen::Vector3d> points;
@@ -83,7 +86,7 @@ namespace ProfilerStreaming::Communicate
                     points.emplace_back(x, 0, z); // Assuming Y is 0 for 2D profiles
                 }
             }
-            return {points, timestamp};
+            return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
         }
         else
         {
@@ -125,7 +128,7 @@ namespace ProfilerStreaming::Communicate
         return true;
     }
 
-    std::pair<std::vector<Eigen::Vector3d>, std::chrono::time_point<std::chrono::system_clock>> OPCUACommunicator::GetDataWithTimestamp()
+    ProfilerStreaming::SpatialData::PointCloudWithTimestamp OPCUACommunicator::GetDataWithTimestamp()
     {
         if (!this->client)
         {
@@ -164,7 +167,7 @@ namespace ProfilerStreaming::Communicate
         }
 
         auto timestamp = std::chrono::system_clock::now();
-        return {points, timestamp};
+        return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
     }
 
 }

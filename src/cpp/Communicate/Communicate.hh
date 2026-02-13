@@ -20,6 +20,7 @@
 
 // Project headers
 #include "../Device/Device.hh"
+#include "../Data/Data.hh"
 
 namespace ProfilerStreaming::Communicate
 {
@@ -35,7 +36,7 @@ namespace ProfilerStreaming::Communicate
             bool Connect();
             bool Disconnect();
 
-            std::pair<std::vector<Eigen::Vector3d>, std::chrono::time_point<std::chrono::system_clock>> GetDataWithTimestamp();
+            ProfilerStreaming::SpatialData::PointCloudWithTimestamp GetDataWithTimestamp();
 
             DeviceType GetDeviceType() const { return this->deviceType; }
 
@@ -53,7 +54,7 @@ namespace ProfilerStreaming::Communicate
             bool Connect();
             bool Disconnect();
 
-            std::pair<std::vector<Eigen::Vector3d>, std::chrono::time_point<std::chrono::system_clock>> GetDataWithTimestamp();
+            ProfilerStreaming::SpatialData::PointCloudWithTimestamp GetDataWithTimestamp();
 
         private:
             std::string host;

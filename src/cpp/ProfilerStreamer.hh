@@ -5,6 +5,8 @@
 #include <vector>
 #include <stdexcept>
 #include <chrono>
+#include <thread>
+#include <mutex>
 
 // 3rd party libraries
 #include <open3d/Open3D.h>

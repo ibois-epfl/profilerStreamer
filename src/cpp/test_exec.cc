@@ -12,6 +12,13 @@ int main()
     ProfilerStreaming::Communicate::OPCUACommunicator opcuaCommunicator(OPCUAHost, DeviceType::IO_LINK, {6, 229916});
     tcpCommunicator.Connect();
     opcuaCommunicator.Connect();
+
+    std::thread tcpThread([&tcpCommunicator]() {
+        while (true) {
+            tcpCommunicator.GetDataWithTimestamp();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Adjust the sleep duration as needed
+        }
+    });
     int counter = 0;
     while(counter < 5) // Loop to get data multiple times for testing
     {
