@@ -1,5 +1,13 @@
+# To configure CMake for Visual Studio x64, use:
+# cmake -G "Visual Studio 18 2026" -A x64 -DCMAKE_BUILD_TYPE=Debug -S C:/Users/damie/profilerStreamer -B c:/Users/damie/profilerStreamer/build
+
 cmake_minimum_required (VERSION 3.14)
 project (profilerStreamer)
+
+set(CMAKE_GENERATOR_PLATFORM x64 CACHE STRING "Target platform")
+if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message(FATAL_ERROR "This project requires a 64-bit build. Please set your generator/platform to x64.")
+endif()
 
 set (CMAKE_CXX_STANDARD 17)
 
@@ -23,7 +31,8 @@ include (CMakeFunctions.cmake)
 update_submodules()
 
 # Open3d
-set(OPEN3D_ROOT_DIR ${PROJECT_SOURCE_DIR}/3rd_party/submodule-open3d)
+download_dependency("open3d" "https://github.com/isl-org/Open3D/releases/download/v0.19.0/open3d-devel-windows-amd64-0.19.0-dbg.zip")
+set(OPEN3D_ROOT_DIR ${PROJECT_SOURCE_DIR}/3rd_party/open3d/open3d-devel-windows-amd64-0.19.0)
 set(Open3D_DIR ${OPEN3D_ROOT_DIR}/CMake)
 find_package(Open3D 0.19.0 REQUIRED)
 

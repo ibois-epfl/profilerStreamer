@@ -1,2 +1,4 @@
 build/
-*.ply
+
+# This ia a dependency that should not be changed
+3rd_party/open3d/
