@@ -13,30 +13,38 @@ int main()
     tcpCommunicator.Connect();
     opcuaCommunicator.Connect();
 
-    std::thread tcpThread([&tcpCommunicator]() {
-        while (true) {
-            tcpCommunicator.GetDataWithTimestamp();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Adjust the sleep duration as needed
+    std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profilesOverTime;
+    std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> rangefinderDataOverTime;
+
+    std::thread tcpThread([&tcpCommunicator, &profilesOverTime]() 
+    {
+        int counter = 0;
+        while (counter < 5)
+        {
+            ProfilerStreaming::SpatialData::PointCloudWithTimestamp profileWithTimestamp 
+                = tcpCommunicator.GetDataWithTimestamp();
+            profilesOverTime.push_back(profileWithTimestamp);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            counter++;
         }
     });
-    int counter = 0;
-    while(counter < 5) // Loop to get data multiple times for testing
+    tcpThread.detach();
+
+    std::thread opcuaThread([&opcuaCommunicator, &rangefinderDataOverTime]()
     {
-        std::chrono::milliseconds delay(1000); // 1 second delay to allow devices to initialize and start streaming data
-        std::this_thread::sleep_for(delay);
-        std::pair<std::vector<Eigen::Vector3d>, std::chrono::time_point<std::chrono::system_clock>> dataWithTimestamp 
-            = tcpCommunicator.GetDataWithTimestamp();
-        std::pair<std::vector<Eigen::Vector3d>, std::chrono::time_point<std::chrono::system_clock>> opcuaDataWithTimestamp 
-            = opcuaCommunicator.GetDataWithTimestamp();
-        std::cout << "Received " << dataWithTimestamp.first.size() << " points from TCPCommunicator at timestamp " 
-                << std::chrono::duration_cast<std::chrono::milliseconds>(dataWithTimestamp.second.time_since_epoch()).count() 
-                << " ms since epoch." << std::endl;
+        int counter = 0;
+        while (counter < 5)
+        {
+            ProfilerStreaming::SpatialData::PointCloudWithTimestamp rangefinderDataWithTimestamp 
+                = opcuaCommunicator.GetDataWithTimestamp();
+            rangefinderDataOverTime.push_back(rangefinderDataWithTimestamp);
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            counter++;
+        }
+    });
+    opcuaThread.detach();
 
-        std::cout << "Received " << opcuaDataWithTimestamp.first.size() << " points from OPCUACommunicator at timestamp " 
-                << std::chrono::duration_cast<std::chrono::milliseconds>(opcuaDataWithTimestamp.second.time_since_epoch()).count() 
-                << " ms since epoch." << std::endl;
-        counter++;
-    }
-
+    std::cout << "Recieved " << profilesOverTime.size() << " profiles and " 
+        << rangefinderDataOverTime.size() << " distance data points";
     return 0;
 }
