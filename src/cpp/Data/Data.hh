@@ -15,6 +15,7 @@ namespace ProfilerStreaming::SpatialData
 
         const std::vector<Eigen::Vector3d>& GetPoints() const { return points; }
         const std::chrono::time_point<std::chrono::system_clock>& GetTimestamp() const { return timestamp; }
+        int GetNumPoints() { return points.size(); }
 
     private:
         std::vector<Eigen::Vector3d> points;
