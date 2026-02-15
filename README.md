@@ -46,17 +46,4 @@ To run the code successfully, you must know:
 
 
 ## Usage
-The code developped here is intended to be developped into a grasshopper component. In the mean time, to use this code in its current form, you need a Windows computer with [git](https://git-scm.com/) and [cmake](https://cmake.org/) installed.
-Run in a terminal in the root of this folder:
-```bash
-mrdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
-cmake --build .
-```
-The second-to-last command will likely take some time the first time you run it because submodules will be initialized
-
-Once the previous commands successfully run, you should have a `build/Debug` folder in which the executable is located, and 2 OXAPI<...>.dll in the `build` folder. At that point you can execute the code from the build folder:
-```bash
-.\Debug\profilerStreamer.exe
-```
+The code developped here is intended to be developped into a grasshopper component. In the mean time, to use this code in its current form, checkout the [USAGE.md](./USAGE.md) file in this repository.
