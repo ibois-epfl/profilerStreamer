@@ -21,4 +21,11 @@ namespace ProfilerStreaming::SpatialData
         std::vector<Eigen::Vector3d> points;
         std::chrono::time_point<std::chrono::system_clock> timestamp;
     };
+
+
+    class PCWT2Open3DConverter
+    {
+        public:
+            static open3d::geometry::PointCloud Convert(std::vector<Eigen::Vector3d>& regularizedProfiles);
+    };
 }
