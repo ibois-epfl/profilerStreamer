@@ -16,18 +16,22 @@ namespace ProfilerStreaming::PostProcess
     {
         std::chrono::milliseconds measurmentInterval(measurmentIntervalInMilliseconds);
         int nIntervals = 0;
-        std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> profileSegments;
-        std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> rangeFinderDistanceSegments;
+        std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> profileSegments = {};
+        std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> rangeFinderDistanceSegments = {};
 
         // Detect the n measurments made in measurmentIntervalInMilliseconds miliseconds.
         for (size_t i = 1; i < this->unsortedRangeFinderDistances.size(); ++i)
         {
-            auto timeDifference = this->unsortedRangeFinderDistances.at(i).GetTimestamp() - this->unsortedRangeFinderDistances.at(i-1).GetTimestamp();
-            if (timeDifference > measurmentInterval)
+            auto timeDifference = this->unsortedRangeFinderDistances.at(i).GetTimestamp() - this->unsortedRangeFinderDistances.front().GetTimestamp();
+            auto timeDifferenceInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(timeDifference).count();
+            if (timeDifferenceInMilliseconds > measurmentIntervalInMilliseconds)
             {
-                nIntervals++;
+                nIntervals = i;
+                break;
             }
         }
+        
+        bool switchFlag = false;
 
         // Sort the profiles into the detected segments
         for (int i = 0; i < this->unsortedRangeFinderDistances.size() - nIntervals; ++i)
@@ -43,7 +47,6 @@ namespace ProfilerStreaming::PostProcess
             }
             else
             {
-                bool switchFlag = false;
                 if (std::abs(distanceDerivative) < 0.005 && switchFlag == false)
                 {
                     rangeFinderDistanceSegments.push_back({});
@@ -55,6 +58,10 @@ namespace ProfilerStreaming::PostProcess
                 }
                 else if (std::abs(distanceDerivative) >= 0.005)
                 {
+                    if (rangeFinderDistanceSegments.size() == 0)
+                    {
+                        rangeFinderDistanceSegments.push_back({});
+                    }
                     rangeFinderDistanceSegments.back().push_back(this->unsortedRangeFinderDistances.at(i));
                     switchFlag = false;
                 }
@@ -62,6 +69,7 @@ namespace ProfilerStreaming::PostProcess
         }
         this->rangeFinderDistancesSortedIntoSegments = rangeFinderDistanceSegments;
         this->numberOfSegments = rangeFinderDistanceSegments.size();
+        std::cout << "Sorted rangefinder data into " << numberOfSegments << " segments." << std::endl;
         for (int i = 0; i < rangeFinderDistanceSegments.size(); ++i)
         {
             const std::chrono::time_point startTime = rangeFinderDistanceSegments.at(i).front().GetTimestamp();
@@ -76,6 +84,8 @@ namespace ProfilerStreaming::PostProcess
                 }
             }
         }
+        // TODO: compute min and max thresholds based on the rangefinder data, to detect when the profiler changed direction and thus when the b-axis rotated.
+        return std::make_pair(0,0);
     }
 
     std::vector<Eigen::Vector3d> DataSlicer::ComputeRegularizedProfiles()
