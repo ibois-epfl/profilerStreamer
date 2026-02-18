@@ -10,6 +10,8 @@
 
 // 3rd party libraries
 #include <open3d/Open3D.h>
+#include <open3d/geometry/PointCloud.h>
+#include <open3d/io/PointCloudIO.h>
 #include <Eigen/Dense>
 
 // local includes
