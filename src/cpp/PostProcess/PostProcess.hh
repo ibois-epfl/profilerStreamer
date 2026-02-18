@@ -32,7 +32,7 @@ namespace ProfilerStreaming::PostProcess
 
             @return std::pair<double minThreshold, double maxThreshold>
             */
-            std::pair<double, double> Slice(uint8_t measurmentIntervalInMilliseconds);
+            std::pair<double, double> Slice(int measurmentIntervalInMilliseconds);
 
             std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> GetProfilesSortedIntoSegments() 
                 const { return this->profilesSortedIntoSegments; };

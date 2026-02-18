@@ -12,7 +12,7 @@ namespace ProfilerStreaming::PostProcess
         this->rangeFinderDistancesSortedIntoSegments = {};
     }
 
-    std::pair<double, double> DataSlicer::Slice(uint8_t measurmentIntervalInMilliseconds)
+    std::pair<double, double> DataSlicer::Slice(int measurmentIntervalInMilliseconds)
     {
         std::chrono::milliseconds measurmentInterval(measurmentIntervalInMilliseconds);
         int nIntervals = 0;
