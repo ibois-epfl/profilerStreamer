@@ -75,21 +75,34 @@ namespace ProfilerStreaming::Communicate
             {
                 throw std::runtime_error("Communication handle is not initialized");
             }
-
-            Baumer::OXApi::Types::Profile profile = this->communicationHandle->GetProfile();
-            auto timestamp = std::chrono::system_clock::now();
-            std::vector<Eigen::Vector3d> points;
-            for (u_int i = 0; i < profile.Length; ++i)
+            if (!this->streamHandle)
             {
-                if (profile.X.at(i) == 0 && profile.Z.at(i) == 0)
-                    continue; // skip invalid points
-                else if (profile.X.at(i) && profile.Z.at(i))
+                this->streamHandle = this->communicationHandle->CreateStream();
+                // this->streamHandle->SetReceiveBufferSize( 2 * 1024 * 1024 );
+                this->streamHandle->Start();
+            }
+            std::vector<Eigen::Vector3d> points;
+            auto timestamp = std::chrono::system_clock::now();
+            if( this->streamHandle->ProfileAvailable( ) )
+            {
+                Baumer::OXApi::UdpStreaming::ProfilePacket profile = this->streamHandle->ReadProfile();
+                const Baumer::OXApi::Types::Profile profileInfo = this->communicationHandle->GetProfile();
+                auto timestamp = std::chrono::system_clock::now();
+                
+                for (u_int i = 0; i < profile.Length; ++i)
                 {
-                    double x = (profile.X.at(i) + profile.XStart) / (double)profile.Precision;
-                    double z = (profile.Z.at(i)) / (double)profile.Precision;
-                    points.emplace_back(x, 0, z); // Assuming Y is 0 for 2D profiles
+                    if (profile.X.at(i) == 0 && profile.Z.at(i) == 0)
+                        continue; // skip invalid points
+                    else if (profile.X.at(i) && profile.Z.at(i))
+                    {
+                        double x = (profile.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
+                        double z = (profile.Z.at(i)) / (double)profileInfo.Precision;
+                        points.emplace_back(x, 0, z); // Assuming Y is 0 for 2D profiles
+                    }
                 }
             }
+            this->streamHandle->ClearProfileQueue();
+            this->streamHandle->ClearMeasurementQueue();
             return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
         }
         else
