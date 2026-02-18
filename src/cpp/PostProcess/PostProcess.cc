@@ -67,6 +67,17 @@ namespace ProfilerStreaming::PostProcess
                 }
             }
         }
+        
+        // Just removing unvalid segments
+        for (int i = 0; i < rangeFinderDistanceSegments.size(); ++i)
+        {
+            if (rangeFinderDistanceSegments.at(i).size() < 10) // if we have less than 10 rangefinder data points in a segment, we assume this is not a valid segment, but just some noise in the data, and we ignore it.
+            {
+                rangeFinderDistanceSegments.erase(rangeFinderDistanceSegments.begin() + i);
+                --i;
+            }
+        }
+        
         this->rangeFinderDistancesSortedIntoSegments = rangeFinderDistanceSegments;
         this->numberOfSegments = rangeFinderDistanceSegments.size();
         std::cout << "Sorted rangefinder data into " << numberOfSegments << " segments." << std::endl;
