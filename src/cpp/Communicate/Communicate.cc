@@ -28,6 +28,8 @@ namespace ProfilerStreaming::Communicate
         {
             if (this->communicationHandle)
                 this->communicationHandle->Disconnect();
+            
+            this->streamHandle->Stop();
         }
         else
         {
@@ -41,6 +43,8 @@ namespace ProfilerStreaming::Communicate
         {
             if (this->communicationHandle)
                 this->communicationHandle->Connect();
+            this->streamHandle = this->communicationHandle->CreateStream();
+            this->streamHandle->Start();
         }
         else
         {

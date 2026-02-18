@@ -43,6 +43,7 @@ namespace ProfilerStreaming::Communicate
         private:
             DeviceType deviceType;
             std::shared_ptr<Baumer::OXApi::Ox> communicationHandle = nullptr;
+            std::shared_ptr<Baumer::OXApi::UdpStreaming::OxStream> streamHandle = nullptr;
     };
 
     class OPCUACommunicator
