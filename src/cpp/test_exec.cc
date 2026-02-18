@@ -15,36 +15,45 @@ int main()
 
     std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profilesOverTime;
     std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> rangefinderDataOverTime;
-
-    std::thread tcpThread([&tcpCommunicator, &profilesOverTime]() 
+    bool hasStopped = false;
+    std::thread tcpThread([&tcpCommunicator, &profilesOverTime, &hasStopped]() 
     {
-        int counter = 0;
-        while (counter < 5)
+        while (! hasStopped)
         {
             ProfilerStreaming::SpatialData::PointCloudWithTimestamp profileWithTimestamp 
                 = tcpCommunicator.GetDataWithTimestamp();
             profilesOverTime.push_back(profileWithTimestamp);
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            counter++;
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     });
     tcpThread.detach();
 
-    std::thread opcuaThread([&opcuaCommunicator, &rangefinderDataOverTime]()
+    std::thread opcuaThread([&opcuaCommunicator, &rangefinderDataOverTime, &hasStopped]()
     {
-        int counter = 0;
-        while (counter < 5)
+        while (! hasStopped)
         {
             ProfilerStreaming::SpatialData::PointCloudWithTimestamp rangefinderDataWithTimestamp 
                 = opcuaCommunicator.GetDataWithTimestamp();
             rangefinderDataOverTime.push_back(rangefinderDataWithTimestamp);
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            counter++;
         }
     });
     opcuaThread.detach();
 
+    std::this_thread::sleep_for(std::chrono::seconds(60)); 
+    hasStopped = true;
+    std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
+
     std::cout << "Recieved " << profilesOverTime.size() << " profiles and " 
-        << rangefinderDataOverTime.size() << " distance data points";
+        << rangefinderDataOverTime.size() << " distance data points" << std::endl;
+
+    int nPointsInFirstProfile = profilesOverTime.size() > 0 ? profilesOverTime.at(0).GetNumPoints() : 0;
+    int nPointsInLastProfile = profilesOverTime.size() > 0 ? profilesOverTime.at(profilesOverTime.size() - 1).GetNumPoints() : 0;
+    
+    ProfilerStreaming::PostProcess::DataSlicer dataSlicer(profilesOverTime, rangefinderDataOverTime);
+    std::pair<double, double> thresholds = dataSlicer.Slice(1000);
+    std::vector<Eigen::Vector3d> regularizedProfile = dataSlicer.ComputeRegularizedProfiles();
+    open3d::geometry::PointCloud combinedPointCloud = ProfilerStreaming::SpatialData::PCWT2Open3DConverter::Convert(regularizedProfile);
+    std::cout << "Combined point cloud has " << combinedPointCloud.points_.size() << " points." << std::endl;
+    open3d::io::WritePointCloud("combined_point_cloud.ply", combinedPointCloud);
     return 0;
 }
