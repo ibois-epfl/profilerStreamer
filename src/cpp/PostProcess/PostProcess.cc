@@ -80,7 +80,6 @@ namespace ProfilerStreaming::PostProcess
         
         this->rangeFinderDistancesSortedIntoSegments = rangeFinderDistanceSegments;
         this->numberOfSegments = rangeFinderDistanceSegments.size();
-        std::cout << "Sorted rangefinder data into " << numberOfSegments << " segments." << std::endl;
         for (int i = 0; i < rangeFinderDistanceSegments.size(); ++i)
         {
             const std::chrono::time_point startTime = rangeFinderDistanceSegments.at(i).front().GetTimestamp();
@@ -128,7 +127,7 @@ namespace ProfilerStreaming::PostProcess
                         {
                             Eigen::Vector3d correctedPoint;
                             correctedPoint.x() = rangeFinderData.GetPoints().at(0).x() + correctionDistance;
-                            correctedPoint.y() = point.x(); // because the x axis for the profiler is the y axis in the CNC.
+                            correctedPoint.y() = point.y();
                             correctedPoint.z() = point.z();
                             regularizedProfiles.push_back(correctedPoint);
                         }
