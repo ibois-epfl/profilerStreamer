@@ -121,6 +121,7 @@ namespace ProfilerStreaming::PostProcess
                             correctedPoint.z() = point.z();
                             regularizedProfiles.push_back(correctedPoint);
                         }
+                        break;
                     }
                 }
             }
