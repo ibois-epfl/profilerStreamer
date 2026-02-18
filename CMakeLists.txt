@@ -1,7 +1,5 @@
-# To configure CMake for Visual Studio x64, use:
-# cmake -G "Visual Studio 18 2026" -A x64 -DCMAKE_BUILD_TYPE=Debug -S C:/Users/damie/profilerStreamer -B c:/Users/damie/profilerStreamer/build
 
-cmake_minimum_required (VERSION 3.14)
+cmake_minimum_required (VERSION 4.2)
 project (profilerStreamer)
 
 set(CMAKE_GENERATOR_PLATFORM x64 CACHE STRING "Target platform")
@@ -73,6 +71,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE ${SHARED_LIB_NAME} Boost::system Boost::thread Boost::coroutine OXApi_debug-vc141-x64 open62541::open62541 Threads::Threads Open3D::Open3D)
     file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi_debug-vc141-x64.dll" DESTINATION "${CMAKE_BINARY_DIR}")
     file(COPY "${OPEN3D_ROOT_DIR}/bin/Open3D.dll" DESTINATION "${CMAKE_BINARY_DIR}")
+    file(COPY "${OPEN3D_ROOT_DIR}/bin/tbb12_debug.dll" DESTINATION "${CMAKE_BINARY_DIR}")
 else()
     target_link_libraries(${SHARED_LIB_NAME} PRIVATE OXApi-vc141-x64)
     target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE Boost::system Boost::thread Boost::coroutine OXApi-vc141-x64 open62541::open62541 Threads::Threads Open3D::Open3D)
