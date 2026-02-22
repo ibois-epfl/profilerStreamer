@@ -1,47 +1,31 @@
 #include "ProfilerStreamer.hh"
 
 
-int main()
+int main(int argc, char* argv[])
 {
     // From BaumerSDK/Cpp/LibOxApi_V2_0_2/LibOxApi_V2_0_2/example/src/oxapiexamples.cpp
     // create an instance of a Ox object
     std::string TCPIPhost = "192.168.0.251";
     std::string OPCUAHost = "opc.tcp://192.168.0.64:4840";
 
-    ProfilerStreaming::Communicate::TCPCommunicator tcpCommunicator(TCPIPhost, DeviceType::OX);
-    ProfilerStreaming::Communicate::OPCUACommunicator opcuaCommunicator(OPCUAHost, DeviceType::IO_LINK, {6, 229916});
+    ProfilerStreaming::Communicate::TCPCommunicator tcpCommunicator(TCPIPhost, ProfilerStreaming::Device::DeviceType::OX);
+    ProfilerStreaming::Communicate::OPCUACommunicator opcuaCommunicator(OPCUAHost, ProfilerStreaming::Device::DeviceType::IO_LINK, {6, 229916});
     tcpCommunicator.Connect();
     opcuaCommunicator.Connect();
 
     std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profilesOverTime;
     std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> rangefinderDataOverTime;
-    bool hasStopped = false;
-    std::thread tcpThread([&tcpCommunicator, &profilesOverTime, &hasStopped]() 
-    {
-        while (! hasStopped)
-        {
-            ProfilerStreaming::SpatialData::PointCloudWithTimestamp profileWithTimestamp 
-                = tcpCommunicator.GetDataWithTimestamp();
-            profilesOverTime.push_back(profileWithTimestamp);
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
-        }
-    });
-    tcpThread.detach();
+    std::atomic<bool> record = true;
+    ProfilerStreaming::Communicate::TCPRecorder* tcpRecorder = new ProfilerStreaming::Communicate::TCPRecorder(tcpCommunicator, 5);
+    ProfilerStreaming::Communicate::OPCUARecorder* opcuaRecorder = new ProfilerStreaming::Communicate::OPCUARecorder(opcuaCommunicator, 5);
+    tcpRecorder->Record(record);
+    opcuaRecorder->Record(record);
 
-    std::thread opcuaThread([&opcuaCommunicator, &rangefinderDataOverTime, &hasStopped]()
-    {
-        while (! hasStopped)
-        {
-            ProfilerStreaming::SpatialData::PointCloudWithTimestamp rangefinderDataWithTimestamp 
-                = opcuaCommunicator.GetDataWithTimestamp();
-            rangefinderDataOverTime.push_back(rangefinderDataWithTimestamp);
-        }
-    });
-    opcuaThread.detach();
-
-    std::this_thread::sleep_for(std::chrono::seconds(30)); 
-    hasStopped = true;
+    std::this_thread::sleep_for(std::chrono::seconds(30));
+    record = false;
     std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
+    profilesOverTime = tcpRecorder->GetRecordedData();
+    rangefinderDataOverTime = opcuaRecorder->GetRecordedData();
 
     std::cout << "Recieved " << profilesOverTime.size() << " profiles and " 
         << rangefinderDataOverTime.size() << " distance data points" << std::endl;
