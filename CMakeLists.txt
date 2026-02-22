@@ -9,6 +9,7 @@ endif()
 
 set (CMAKE_CXX_STANDARD 17)
 
+set (BINDINGS_MODULE_NAME "profilerStreamerBindings")
 set (SHARED_LIB_NAME "profilerStreamer")
 set (TEST_EXECUTABLE_NAME "profilerStreamerTest")
 
@@ -48,8 +49,22 @@ add_subdirectory( ${PROJECT_SOURCE_DIR}/3rd_party/open62541)
 # Threads
 find_package(Threads)
 
+# nanobind
+if (CMAKE_VERSION VERSION_LESS 3.18)
+  set(DEV_MODULE Development)
+else()
+  set(DEV_MODULE Development.Module)
+endif()
+find_package(Python 3.9 COMPONENTS Interpreter ${DEV_MODULE} REQUIRED)
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+add_subdirectory(${PROJECT_SOURCE_DIR}/3rd_party/nanobind)
+
 # profilerStreamer
 file(GLOB_RECURSE SOURCES "src/cpp/*.cc" "src/cpp/*.hh" "src/cpp/ProfilerStreamer.hh")
+list(REMOVE_ITEM SOURCES "${PROJECT_SOURCE_DIR}/src/cpp/bindings.cc")
 add_library(${SHARED_LIB_NAME} SHARED ${SOURCES})
 target_link_libraries(${SHARED_LIB_NAME} PRIVATE Open3D::Open3D Boost::system Boost::thread Boost::coroutine open62541::open62541 Threads::Threads)
 if(WIN32)
@@ -78,3 +93,14 @@ else()
     file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi-vc141-x64.dll" DESTINATION "${CMAKE_BINARY_DIR}")
     file(COPY "${OPEN3D_ROOT_DIR}/bin/Open3D.dll" DESTINATION "${CMAKE_BINARY_DIR}")
 endif()
+
+nanobind_add_module(${BINDINGS_MODULE_NAME} ${PROJECT_SOURCE_DIR}/src/cpp/bindings.cc)
+target_link_libraries(${BINDINGS_MODULE_NAME} PRIVATE ${SHARED_LIB_NAME} Open3D::Open3D Boost::system Boost::thread Boost::coroutine open62541::open62541 Threads::Threads)
+target_include_directories(${BINDINGS_MODULE_NAME} 
+    PRIVATE ${OXAPI_ROOT_DIR}/include/
+    PRIVATE ${OPEN3D_ROOT_DIR}/include/
+    PRIVATE ${OPEN3D_ROOT_DIR}/include/open3d/3rdparty/
+    PRIVATE ${PROJECT_SOURCE_DIR}/src/cpp/
+)
+
+set_target_properties(${BINDINGS_MODULE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/py/bindings/)
