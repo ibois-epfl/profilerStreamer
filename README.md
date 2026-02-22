@@ -2,10 +2,13 @@
 
 <p align="center">
 <img src="./assets/2026_02_09_profiler_usage.gif" width="40%">
-<img src="./assets/2026_02_11_test_profileur.png" width="40%">
+<img src="./assets/2026_02_11_test_profileur.png" width="45%">
 </p>
 
 profilerStreamer is a small project to combine 2D laser profiler data from Baumer with 1D sick distance sensor to recreate 3D point cloud of timber pieces in a CNC.
+
+>[!Note]
+> This repository aims at creating a small grasshopper plugin for Rhino8. It is currently only a c++ library with binding and is still work in progress. 
 
 The hardware used in this instance is:
 
@@ -14,7 +17,7 @@ The hardware used in this instance is:
 
 The setup is illustrated hereunder:
 <p align="center">
-<img src="./assets/2026_02_09_Profiler_setup.svg" width="50%"></center>
+<img src="./assets/2026_02_09_Profiler_setup.svg" width="80%"></center>
 </p>
 
 ## Prerequisites
@@ -32,19 +35,20 @@ To run the code successfully, you must know:
     - the Baumer profiler
     - the IO-Link master
 
-    [TO BE FIXED] For now hard-coded in the code:
+    > [!NOTE]
+    > [TO BE FIXED] For now hard-coded in the c++ code, but as parameter in the python binding:
     ```cpp
-    std::string host = "192.168.0.251";
-    //
-    UA_Client *client = UA_Client_new();
-    UA_StatusCode status = UA_Client_connect(client, "opc.tcp://192.168.0.64:4840");
+    std::string OPCUAHost = "opc.tcp://192.168.0.64:4840";
     ```
 
 - The NamespaceIndex and Identifier of the port 4 of the IO-Link device in the OPC-UA server of the IO-Link master.
 
-    [TO BE FIXED] For now hard-coded in the code:
+    > [!NOTE]
+    > [TO BE FIXED] For now hard-coded in the c++ code, but as parameter in the python binding:
     ```cpp
-    UA_NodeId processValueNodeId = UA_NODEID_NUMERIC(6, 229916)
+    ProfilerStreaming::Communicate::OPCUACommunicator opcuaCommunicator(OPCUAHost,
+                                                                        ProfilerStreaming::Device::DeviceType::IO_LINK, 
+                                                                        {6, 229916}); // The NamespaceIndex and Identifier
     ```
     These parameters can be found using the [UaExpert software](https://www.unified-automation.com/):
     <center><img src="./assets/OPC_UA_index_and_id.png" width=90%></center>
