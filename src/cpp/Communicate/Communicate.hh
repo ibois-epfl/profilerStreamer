@@ -63,4 +63,41 @@ namespace ProfilerStreaming::Communicate
             std::pair<int, int> namespaceIndexAndIdentifier; // For OPC UA node identification
             UA_Client* client; // Placeholder for actual OPC UA client
     };
+
+    class Recorder
+    {
+        public:
+            virtual void Record(bool& recordingSwitch) = 0;
+            std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> GetRecordedData()
+            {
+                return this->recordedData;
+            };
+
+        protected:
+            std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> recordedData;
+    };
+
+    class TCPRecorder : public Recorder
+    {
+        public:
+            TCPRecorder(TCPCommunicator& tcpCommunicator, int sleepTimeMiliSec): tcpCommunicator(tcpCommunicator), sleepTimeMiliSec(sleepTimeMiliSec) {}
+            ~TCPRecorder() {}
+            void Record(bool& recordingSwitch) override;
+
+        private:
+            TCPCommunicator& tcpCommunicator;
+            int sleepTimeMiliSec;
+    };
+
+    class OPCUARecorder : public Recorder
+    {
+        public:
+            OPCUARecorder(OPCUACommunicator& opcuaCommunicator, int sleepTimeMiliSec): opcuaCommunicator(opcuaCommunicator), sleepTimeMiliSec(sleepTimeMiliSec) {}
+            ~OPCUARecorder() {}
+            void Record(bool& recordingSwitch) override;
+
+        private:
+            OPCUACommunicator& opcuaCommunicator;
+            int sleepTimeMiliSec;
+    };
 }

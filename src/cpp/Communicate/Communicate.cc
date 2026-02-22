@@ -198,4 +198,33 @@ namespace ProfilerStreaming::Communicate
         return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
     }
 
+
+    void TCPRecorder::Record(bool& recordingSwitch)
+    {
+        std::thread recordingThread([&recordingSwitch, this]()
+        {
+            while (recordingSwitch)
+            {
+                auto profile = this->tcpCommunicator.GetDataWithTimestamp();
+                this->recordedData.push_back(profile);
+                std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
+            }
+        });
+        recordingThread.detach();
+    }
+
+    void OPCUARecorder::Record(bool& recordingSwitch)
+    {
+        std::thread recordingThread([&recordingSwitch, this]()
+        {
+            while (recordingSwitch)
+            {
+                auto data = this->opcuaCommunicator.GetDataWithTimestamp();
+                this->recordedData.push_back(data);
+                std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
+            }
+        });
+        recordingThread.detach();
+    }
+
 }
