@@ -68,7 +68,7 @@ namespace ProfilerStreaming::Communicate
     class Recorder
     {
         public:
-            virtual void Record(bool& recordingSwitch) = 0;
+            virtual void Record(std::atomic<bool>& recordingSwitch) = 0;
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> GetRecordedData()
             {
                 return this->recordedData;
@@ -83,7 +83,7 @@ namespace ProfilerStreaming::Communicate
         public:
             TCPRecorder(TCPCommunicator& tcpCommunicator, int sleepTimeMiliSec): tcpCommunicator(tcpCommunicator), sleepTimeMiliSec(sleepTimeMiliSec) {}
             ~TCPRecorder() {}
-            void Record(bool& recordingSwitch) override;
+            void Record(std::atomic<bool>& recordingSwitch) override;
 
         private:
             TCPCommunicator& tcpCommunicator;
@@ -95,7 +95,7 @@ namespace ProfilerStreaming::Communicate
         public:
             OPCUARecorder(OPCUACommunicator& opcuaCommunicator, int sleepTimeMiliSec): opcuaCommunicator(opcuaCommunicator), sleepTimeMiliSec(sleepTimeMiliSec) {}
             ~OPCUARecorder() {}
-            void Record(bool& recordingSwitch) override;
+            void Record(std::atomic<bool>& recordingSwitch) override;
 
         private:
             OPCUACommunicator& opcuaCommunicator;
