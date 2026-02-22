@@ -55,4 +55,5 @@ To run the code successfully, you must know:
 
 
 ## Usage
+
 The code developped here is intended to be developped into a grasshopper component. In the mean time, to use this code in its current form, checkout the [USAGE.md](./USAGE.md) file in this repository.
