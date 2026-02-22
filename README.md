@@ -2,6 +2,7 @@
 
 <p align="center">
 <img src="./assets/2026_02_09_profiler_usage.gif" width="40%">
+<img src="./assets/2026_02_11_test_profileur.png" width="40%">
 </p>
 
 profilerStreamer is a small project to combine 2D laser profiler data from Baumer with 1D sick distance sensor to recreate 3D point cloud of timber pieces in a CNC.
