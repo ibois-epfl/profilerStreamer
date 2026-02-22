@@ -199,7 +199,7 @@ namespace ProfilerStreaming::Communicate
     }
 
 
-    void TCPRecorder::Record(bool& recordingSwitch)
+    void TCPRecorder::Record(std::atomic<bool>& recordingSwitch)
     {
         std::thread recordingThread([&recordingSwitch, this]()
         {
@@ -213,7 +213,7 @@ namespace ProfilerStreaming::Communicate
         recordingThread.detach();
     }
 
-    void OPCUARecorder::Record(bool& recordingSwitch)
+    void OPCUARecorder::Record(std::atomic<bool>& recordingSwitch)
     {
         std::thread recordingThread([&recordingSwitch, this]()
         {

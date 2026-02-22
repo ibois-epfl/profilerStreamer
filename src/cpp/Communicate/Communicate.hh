@@ -10,6 +10,7 @@
 #include <string>
 #include <utility>
 #include <chrono>
+#include <atomic>
 
 // 3rd-party libraries
 #include <open3d/Open3D.h>
