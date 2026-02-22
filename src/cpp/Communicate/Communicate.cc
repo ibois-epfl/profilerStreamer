@@ -145,6 +145,17 @@ namespace ProfilerStreaming::Communicate
         return true;
     }
 
+    bool OPCUACommunicator::Disconnect()
+    {
+        if (this->client)
+        {
+            UA_Client_disconnect(this->client);
+            UA_Client_delete(this->client);
+            this->client = nullptr;
+        }
+        return true;
+    }
+
     ProfilerStreaming::SpatialData::PointCloudWithTimestamp OPCUACommunicator::GetDataWithTimestamp()
     {
         if (!this->client)
