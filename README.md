@@ -1,8 +1,14 @@
 # profilerStreamer
 
-<center><img src="./assets/2026_02_09_profiler_usage.gif" width="40%"></center>
+<p align="center">
+<img src="./assets/2026_02_09_profiler_usage.gif" width="40%">
+<img src="./assets/2026_02_11_test_profileur.png" width="45%">
+</p>
 
 profilerStreamer is a small project to combine 2D laser profiler data from Baumer with 1D sick distance sensor to recreate 3D point cloud of timber pieces in a CNC.
+
+>[!Note]
+> This repository aims at creating a small grasshopper plugin for Rhino8. It is currently only a c++ library with binding and is still work in progress. 
 
 The hardware used in this instance is:
 
@@ -10,7 +16,9 @@ The hardware used in this instance is:
 - [Sick DT35-B15251 distance sensor](https://www.sick.com/ch/en/catalog/products/distance-sensors/laser-distance-sensors/dx35/dt35-b15251/p/p295353?tab=detail)
 
 The setup is illustrated hereunder:
-<center><img src="./assets/2026_02_09_Profiler_setup.svg" width="50%"></center>
+<p align="center">
+<img src="./assets/2026_02_09_Profiler_setup.svg" width="80%"></center>
+</p>
 
 ## Prerequisites
 
@@ -27,36 +35,25 @@ To run the code successfully, you must know:
     - the Baumer profiler
     - the IO-Link master
 
-    [TO BE FIXED] For now hard-coded in the code:
+    > [!NOTE]
+    > [TO BE FIXED] For now hard-coded in the c++ code, but as parameter in the python binding:
     ```cpp
-    std::string host = "192.168.0.251";
-    //
-    UA_Client *client = UA_Client_new();
-    UA_StatusCode status = UA_Client_connect(client, "opc.tcp://192.168.0.64:4840");
+    std::string OPCUAHost = "opc.tcp://192.168.0.64:4840";
     ```
 
 - The NamespaceIndex and Identifier of the port 4 of the IO-Link device in the OPC-UA server of the IO-Link master.
 
-    [TO BE FIXED] For now hard-coded in the code:
+    > [!NOTE]
+    > [TO BE FIXED] For now hard-coded in the c++ code, but as parameter in the python binding:
     ```cpp
-    UA_NodeId processValueNodeId = UA_NODEID_NUMERIC(6, 229916)
+    ProfilerStreaming::Communicate::OPCUACommunicator opcuaCommunicator(OPCUAHost,
+                                                                        ProfilerStreaming::Device::DeviceType::IO_LINK, 
+                                                                        {6, 229916}); // The NamespaceIndex and Identifier
     ```
     These parameters can be found using the [UaExpert software](https://www.unified-automation.com/):
     <center><img src="./assets/OPC_UA_index_and_id.png" width=90%></center>
 
 
 ## Usage
-The code developped here is intended to be developped into a grasshopper component. In the mean time, to use this code in its current form, you need a Windows computer with [git](https://git-scm.com/) and [cmake](https://cmake.org/) installed. For compatibility with the OXAPI which is pre-compiled, you need to compile using MSVC, which is installed on your computer if you install Visual Studio. It takes a lot of space but it seems the most straight-forward way to make it work. The following assumes you have the necessary tools installed through the Visual Studio installation.
-Run in a terminal in the root of this folder:
-```bash
-mrdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
-cmake --build .
-```
-The second-to-last command will likely take some time the first time you run it because submodules will be initialized
 
-Once the previous commands successfully run, you should have a `build/Debug` folder in which the executable is located, and 2 OXAPI<...>.dll in the `build` folder. At that point you can execute the code from the build folder:
-```bash
-.\Debug\profilerStreamer.exe
-```
+The code developped here is intended to be developped into a grasshopper component. In the mean time, to use this code in its current form, checkout the [USAGE.md](./USAGE.md) file in this repository.
