@@ -30,7 +30,7 @@ namespace ProfilerStreaming::Communicate
     class TCPCommunicator
     {
         public:
-            TCPCommunicator(const std::string& host, DeviceType deviceType);
+            TCPCommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType);
             ~TCPCommunicator();
 
             bool Connect();
@@ -38,10 +38,10 @@ namespace ProfilerStreaming::Communicate
 
             ProfilerStreaming::SpatialData::PointCloudWithTimestamp GetDataWithTimestamp();
 
-            DeviceType GetDeviceType() const { return this->deviceType; }
+            ProfilerStreaming::Device::DeviceType GetDeviceType() const { return this->deviceType; }
 
         private:
-            DeviceType deviceType;
+            ProfilerStreaming::Device::DeviceType deviceType;
             std::shared_ptr<Baumer::OXApi::Ox> communicationHandle = nullptr;
             std::shared_ptr<Baumer::OXApi::UdpStreaming::OxStream> streamHandle = nullptr;
     };
@@ -49,7 +49,7 @@ namespace ProfilerStreaming::Communicate
     class OPCUACommunicator
     {
         public:
-            OPCUACommunicator(const std::string& host, DeviceType deviceType, std::pair<int, int> namespaceIndexAndIdentifier);
+            OPCUACommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType, std::pair<int, int> namespaceIndexAndIdentifier);
             ~OPCUACommunicator();
 
             bool Connect();
@@ -59,7 +59,7 @@ namespace ProfilerStreaming::Communicate
 
         private:
             std::string host;
-            DeviceType deviceType;
+            ProfilerStreaming::Device::DeviceType deviceType;
             std::pair<int, int> namespaceIndexAndIdentifier; // For OPC UA node identification
             UA_Client* client; // Placeholder for actual OPC UA client
     };

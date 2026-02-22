@@ -3,9 +3,9 @@
 
 namespace ProfilerStreaming::Communicate
 {
-    TCPCommunicator::TCPCommunicator(const std::string& host, DeviceType deviceType) : deviceType(deviceType)
+    TCPCommunicator::TCPCommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType) : deviceType(deviceType)
     {
-        if (deviceType == DeviceType::OX)
+        if (deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
             try
             {
@@ -24,7 +24,7 @@ namespace ProfilerStreaming::Communicate
 
     TCPCommunicator::~TCPCommunicator()
     {
-        if (this->deviceType == DeviceType::OX)
+        if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
             if (this->communicationHandle)
                 this->communicationHandle->Disconnect();
@@ -39,7 +39,7 @@ namespace ProfilerStreaming::Communicate
 
     bool TCPCommunicator::Connect()
     {
-        if (this->deviceType == DeviceType::OX)
+        if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
             if (this->communicationHandle)
                 this->communicationHandle->Connect();
@@ -55,7 +55,7 @@ namespace ProfilerStreaming::Communicate
 
     bool TCPCommunicator::Disconnect()
     {
-        if (this->deviceType == DeviceType::OX)
+        if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
             if (this->communicationHandle)
                 this->communicationHandle->Disconnect();
@@ -69,7 +69,7 @@ namespace ProfilerStreaming::Communicate
 
     ProfilerStreaming::SpatialData::PointCloudWithTimestamp TCPCommunicator::GetDataWithTimestamp()
     {
-        if (this->deviceType == DeviceType::OX)
+        if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
             if (!this->communicationHandle)
             {
@@ -111,9 +111,9 @@ namespace ProfilerStreaming::Communicate
         }
     }
 
-    OPCUACommunicator::OPCUACommunicator(const std::string& host, DeviceType deviceType, std::pair<int, int> namespaceIndexAndIdentifier) : host(host), deviceType(deviceType), namespaceIndexAndIdentifier(namespaceIndexAndIdentifier)
+    OPCUACommunicator::OPCUACommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType, std::pair<int, int> namespaceIndexAndIdentifier) : host(host), deviceType(deviceType), namespaceIndexAndIdentifier(namespaceIndexAndIdentifier)
     {
-        if (deviceType != DeviceType::IO_LINK)
+        if (deviceType != ProfilerStreaming::Device::DeviceType::IO_LINK)
         {
             throw std::invalid_argument("Unsupported device type for OPC UA communication");
         }
