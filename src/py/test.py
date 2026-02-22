@@ -1,4 +1,4 @@
-from bindings.Debug import profilerStreamerBindings as psb
+from bindings import profilerStreamerBindings as psb
 import time
 
 def main():
