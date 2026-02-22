@@ -1,5 +1,5 @@
 
-cmake_minimum_required (VERSION 4.2)
+cmake_minimum_required (VERSION 3.18)
 project (profilerStreamer)
 
 set(CMAKE_GENERATOR_PLATFORM x64 CACHE STRING "Target platform")
@@ -87,6 +87,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi_debug-vc141-x64.dll" DESTINATION "${CMAKE_BINARY_DIR}")
     file(COPY "${OPEN3D_ROOT_DIR}/bin/Open3D.dll" DESTINATION "${CMAKE_BINARY_DIR}")
     file(COPY "${OPEN3D_ROOT_DIR}/bin/tbb12_debug.dll" DESTINATION "${CMAKE_BINARY_DIR}")
+    file(COPY "${CMAKE_BINARY_DIR}/Debug/ProfilerStreamer.dll" DESTINATION "${PROJECT_SOURCE_DIR}/src/py/bindings/")
 else()
     target_link_libraries(${SHARED_LIB_NAME} PRIVATE OXApi-vc141-x64)
     target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE Boost::system Boost::thread Boost::coroutine OXApi-vc141-x64 open62541::open62541 Threads::Threads Open3D::Open3D)
@@ -104,3 +105,14 @@ target_include_directories(${BINDINGS_MODULE_NAME}
 )
 
 set_target_properties(${BINDINGS_MODULE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/py/bindings/)
+# The following is just to avoid annoying /Debug or /Release subfolders for the output .pyd file.
+set_target_properties(${BINDINGS_MODULE_NAME} PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/src/py/bindings/"
+    LIBRARY_OUTPUT_DIRECTORY_DEBUG "${PROJECT_SOURCE_DIR}/src/py/bindings/"
+    LIBRARY_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/src/py/bindings/"
+    LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_SOURCE_DIR}/src/py/bindings/"
+    LIBRARY_OUTPUT_DIRECTORY_MINSIZEREL "${PROJECT_SOURCE_DIR}/src/py/bindings/"
+)
+file(COPY "${OPEN3D_ROOT_DIR}/bin/Open3D.dll" DESTINATION "${PROJECT_SOURCE_DIR}/src/py/bindings/")
+file(COPY "${OPEN3D_ROOT_DIR}/bin/tbb12_debug.dll" DESTINATION "${PROJECT_SOURCE_DIR}/src/py/bindings/")
+file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi_debug-vc141-x64.dll" DESTINATION "${PROJECT_SOURCE_DIR}/src/py/bindings/")
