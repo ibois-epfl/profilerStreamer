@@ -7,7 +7,7 @@ Once the necessary tools installed, please run in the root of the repository:
 ```bash
 mrdir build
 cd build
-cmake -G "Visual Studio 18 2026" -A x64 -DCMAKE_BUILD_TYPE=Debug -S ../ -B ./
+cmake -G "Visual Studio 18 2026" -A x64 -DCMAKE_BUILD_TYPE=Debug -S ../ -B ./ # or "Visual Studio 17 2022"
 cmake --build .
 ```
 
