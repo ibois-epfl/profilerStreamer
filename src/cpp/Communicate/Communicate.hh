@@ -133,7 +133,12 @@ namespace ProfilerStreaming::Communicate
     class Recorder
     {
         public:
-            virtual void Record(std::atomic<bool>& recordingSwitch) = 0;
+            Recorder(int sleepTimeMiliSec) : sleepTimeMiliSec(sleepTimeMiliSec) {}
+            virtual ~Recorder() {}
+
+            virtual void StartRecording() = 0;
+
+            virtual void StopRecording() = 0;
 
             /*
             Retrieves the recorded data.
@@ -149,6 +154,18 @@ namespace ProfilerStreaming::Communicate
             A vector to store the recorded data, as a protected member. This allows derived classes to access and modify the recorded data.
             */
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> recordedData;
+
+            /*
+            The time in milliseconds to wait between recording data points, as a protected member.
+            */
+            int sleepTimeMiliSec;
+
+            /*
+            A thread used for recording data in the background, as a protected member.
+            */
+            std::thread recordingThread;
+
+            std::atomic<bool> recordingSwitch;
     };
 
     class TCPRecorder : public Recorder
@@ -159,25 +176,22 @@ namespace ProfilerStreaming::Communicate
             @param tcpCommunicator A reference to a TCPCommunicator object to use for recording data.
             @param sleepTimeMiliSec The time in milliseconds to wait between recording data points.
             */
-            TCPRecorder(TCPCommunicator& tcpCommunicator, int sleepTimeMiliSec): tcpCommunicator(tcpCommunicator), sleepTimeMiliSec(sleepTimeMiliSec) {}
-            ~TCPRecorder() {}
+            TCPRecorder(TCPCommunicator& tcpCommunicator, int sleepTimeMiliSec): Recorder(sleepTimeMiliSec), tcpCommunicator(tcpCommunicator) {}
+            ~TCPRecorder();
 
             /*
             Records data from the TCPCommunicator in a separate thread while the recording switch is true.
             @param recordingSwitch A reference to an atomic boolean that controls the recording loop.
             */
-            void Record(std::atomic<bool>& recordingSwitch) override;
+            void StartRecording() override;
+
+            void StopRecording() override;
 
         private:
             /*
             A reference to the TCPCommunicator object used for recording data, as a private member.
             */
             TCPCommunicator& tcpCommunicator;
-
-            /*
-            The time in milliseconds to wait between recording data points, as a private member.
-            */
-            int sleepTimeMiliSec;
     };
 
     class OPCUARecorder : public Recorder
@@ -188,22 +202,20 @@ namespace ProfilerStreaming::Communicate
             @param opcuaCommunicator A reference to an OPCUACommunicator object to use for recording data.
             @param sleepTimeMiliSec The time in milliseconds to wait between recording data points.
             */
-            OPCUARecorder(OPCUACommunicator& opcuaCommunicator, int sleepTimeMiliSec): opcuaCommunicator(opcuaCommunicator), sleepTimeMiliSec(sleepTimeMiliSec) {}
-            ~OPCUARecorder() {}
+            OPCUARecorder(OPCUACommunicator& opcuaCommunicator, int sleepTimeMiliSec): Recorder(sleepTimeMiliSec), opcuaCommunicator(opcuaCommunicator) {}
+            ~OPCUARecorder();
             /*
             Records data from the OPCUACommunicator in a separate thread while the recording switch is true.
             @param recordingSwitch A reference to an atomic boolean that controls the recording loop.
             */
-            void Record(std::atomic<bool>& recordingSwitch) override;
+            void StartRecording() override;
+
+            void StopRecording() override;
 
         private:
             /*
             A reference to the OPCUACommunicator object used for recording data, as a private member.
             */
             OPCUACommunicator& opcuaCommunicator;
-            /*
-            The time in milliseconds to wait between recording data points, as a private member.
-            */
-            int sleepTimeMiliSec;
     };
 }

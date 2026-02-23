@@ -7,18 +7,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
-            try
-            {
-                this->communicationHandle = Baumer::OXApi::Ox::Create(host);
-            }
-            catch (const std::exception& e)
-            {
-                throw std::runtime_error("Failed to initialize OX device communication: " + std::string(e.what()));
-            }
-        }
-        else
-        {
-            throw std::invalid_argument("Unsupported device type");
+            this->communicationHandle = Baumer::OXApi::Ox::Create(host);
         }
     }
 
@@ -29,11 +18,11 @@ namespace ProfilerStreaming::Communicate
             if (this->communicationHandle)
                 this->communicationHandle->Disconnect();
             
-            this->streamHandle->Stop();
-        }
-        else
-        {
-            throw std::invalid_argument("Unsupported device type");
+            if (this->streamHandle)
+                this->streamHandle->Stop();
+                this->streamHandle->Close();
+            this->streamHandle = nullptr;
+            this->communicationHandle = nullptr;
         }
     }
 
@@ -43,8 +32,13 @@ namespace ProfilerStreaming::Communicate
         {
             if (this->communicationHandle)
                 this->communicationHandle->Connect();
-            this->streamHandle = this->communicationHandle->CreateStream();
-            this->streamHandle->Start();
+            
+                if (!this->streamHandle)
+            {
+                this->streamHandle = this->communicationHandle->CreateStream();
+                this->streamHandle->Start();
+            }
+            
         }
         else
         {
@@ -59,10 +53,13 @@ namespace ProfilerStreaming::Communicate
         {
             if (this->communicationHandle)
                 this->communicationHandle->Disconnect();
-        }
-        else
-        {
-            throw std::invalid_argument("Unsupported device type");
+
+            if (this->streamHandle)
+            {
+                this->streamHandle->Stop();
+                this->streamHandle->Close();
+            }
+            this->communicationHandle = nullptr;
         }
         return true; // Placeholder return value
     }
@@ -198,33 +195,56 @@ namespace ProfilerStreaming::Communicate
         return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
     }
 
-
-    void TCPRecorder::Record(std::atomic<bool>& recordingSwitch)
+    TCPRecorder::~TCPRecorder()
     {
-        std::thread recordingThread([&recordingSwitch, this]()
+        this->StopRecording();
+    }
+
+
+    void TCPRecorder::StartRecording()
+    {
+        this->recordingSwitch = true;
+
+        this->recordingThread = std::thread([this]()
         {
-            while (recordingSwitch)
+            while (this->recordingSwitch)
             {
                 auto profile = this->tcpCommunicator.GetDataWithTimestamp();
                 this->recordedData.push_back(profile);
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
-        recordingThread.detach();
+        this->recordingThread.detach();
     }
 
-    void OPCUARecorder::Record(std::atomic<bool>& recordingSwitch)
+    void TCPRecorder::StopRecording()
     {
-        std::thread recordingThread([&recordingSwitch, this]()
+        this->recordingSwitch = false;
+    }
+
+    OPCUARecorder::~OPCUARecorder()
+    {
+        this->StopRecording();
+    }
+
+    void OPCUARecorder::StartRecording()
+    {
+        this->recordingSwitch = true;
+        this->recordingThread = std::thread([this]()
         {
-            while (recordingSwitch)
+            while (this->recordingSwitch)
             {
                 auto data = this->opcuaCommunicator.GetDataWithTimestamp();
                 this->recordedData.push_back(data);
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
-        recordingThread.detach();
+        this->recordingThread.detach();
+    }
+
+    void OPCUARecorder::StopRecording()
+    {
+        this->recordingSwitch = false;
     }
 
 }
