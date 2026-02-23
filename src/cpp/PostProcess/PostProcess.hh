@@ -38,8 +38,16 @@ namespace ProfilerStreaming::PostProcess
             */
             std::pair<double, double> Slice(int measurmentIntervalInMilliseconds);
 
+            /*
+            Getter for the profiles sorted into segments.
+            @return A vector of vectors of PointCloudWithTimestamp objects representing the profiles sorted into segments.
+            */
             std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> GetProfilesSortedIntoSegments() 
                 const { return this->profilesSortedIntoSegments; };
+            /*
+            Getter for the rangefinder distances sorted into segments.
+            @return A vector of vectors of PointCloudWithTimestamp objects representing the rangefinder distances sorted into segments.
+            */
             std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> GetRangeFinderDistancesSortedIntoSegments() 
                 const { return this->rangeFinderDistancesSortedIntoSegments; };
             /*
@@ -58,14 +66,37 @@ namespace ProfilerStreaming::PostProcess
             double GetMaxThreshold() const { return this->maxThreshold; }
         
         private:
+            /*
+            The unsorted profiles, as a private member.
+            */
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> unsortedProfiles;
+
+            /*
+            The unsorted rangefinder distances, as a private member.
+            */
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> unsortedRangeFinderDistances;
 
+            /*
+            The profiles sorted into segments, as a private member.
+            */
             std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> profilesSortedIntoSegments;
+            /*
+            The rangefinder distances sorted into segments, as a private member.
+            */
             std::vector<std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>> rangeFinderDistancesSortedIntoSegments;
 
+            /*
+            The number of segments, as a private member.
+            */
             uint8_t numberOfSegments = 0;
+
+            /*
+            The minimum value in the rangefinder values, as a private member.
+            */
             double minThreshold = 0;
+            /*
+            The maximum value in the rangefinder values, as a private member.
+            */
             double maxThreshold = 0;
     };
 }
