@@ -31,7 +31,13 @@ namespace ProfilerStreaming::SpatialData
         Getter for the timestamp associated with the point cloud.
         @return A time point representing the timestamp.
         */
-        const std::chrono::time_point<std::chrono::system_clock>& GetTimestamp() const { return timestamp; }
+        const std::chrono::time_point<std::chrono::high_resolution_clock>& GetTimestamp() const { return timestamp; }
+
+        /*
+        Getter for the timestamp as an integer representing the number of milliseconds since the epoch. It is friendlier for python bindings.
+        @return A long long integer representing the timestamp in milliseconds since the epoch.
+        */
+        long long GetTimeStampAsInt() const {return std::chrono::duration_cast<std::chrono::milliseconds>(timestamp.time_since_epoch()).count(); }
 
         /*
         Getter for the number of points in the point cloud.
