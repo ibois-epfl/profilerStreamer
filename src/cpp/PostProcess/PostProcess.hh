@@ -14,6 +14,7 @@
 // Project headers
 #include "../Device/Device.hh"
 #include "../Data/Data.hh"
+#include "../Utils/Utils.hh"
 
 namespace ProfilerStreaming::PostProcess
 {
