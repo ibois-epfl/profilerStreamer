@@ -139,13 +139,13 @@ namespace ProfilerStreaming::PostProcess
         return regularizedProfiles;
     }
 
-    std::vector<std::array<double, 3>> DataSlicer::ComputeRegularizedProfilesAsArray()
+    std::vector<std::vector<double>> DataSlicer::ComputeRegularizedProfilesAsArray()
     {
-        std::vector<std::array<double, 3>> regularizedProfilesAsArray;
+        std::vector<std::vector<double>> regularizedProfilesAsArray;
         std::vector<Eigen::Vector3d> regularizedProfiles = this->ComputeRegularizedProfiles();
         for (const auto& point : regularizedProfiles)
         {
-            std::array<double, 3> pointAsArray = {point.x(), point.y(), point.z()};
+            std::vector<double> pointAsArray = {point.x(), point.y(), point.z()};
             regularizedProfilesAsArray.push_back(pointAsArray);
         }
         return regularizedProfilesAsArray;
