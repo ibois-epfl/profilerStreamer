@@ -13,7 +13,7 @@ NB_MODULE(profilerStreamerBindings, m)
         .value("IO_LINK", ProfilerStreaming::Device::DeviceType::IO_LINK, "IO-Link device type");
 
     nanobind::class_<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>(m, "PointCloudWithTimestamp")
-        .def(nanobind::init<const std::vector<Eigen::Vector3d>&, const std::chrono::time_point<std::chrono::system_clock>&>())
+        .def(nanobind::init<const std::vector<Eigen::Vector3d>&, const std::chrono::time_point<std::chrono::high_resolution_clock>&>())
         .def("GetPoints", &ProfilerStreaming::SpatialData::PointCloudWithTimestamp::GetPoints, "Returns the point cloud data as a vector of Eigen::Vector3d, where each Vector3d represents a point in 3D space with x, y, z coordinates.")
         .def("GetTimeStampAsInt", &ProfilerStreaming::SpatialData::PointCloudWithTimestamp::GetTimeStampAsInt, "Returns the timestamp as an integer representing the number of milliseconds since the epoch.")
         .def("GetNumPoints", &ProfilerStreaming::SpatialData::PointCloudWithTimestamp::GetNumPoints, "Returns the number of points in the point cloud.");
@@ -50,5 +50,6 @@ NB_MODULE(profilerStreamerBindings, m)
         .def("ComputeRegularizedProfilesAsArray", &ProfilerStreaming::PostProcess::DataSlicer::ComputeRegularizedProfilesAsArray)
         .def("GetNumberOfSegments", &ProfilerStreaming::PostProcess::DataSlicer::GetNumberOfSegments)
         .def("GetMinThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMinThreshold)
-        .def("GetMaxThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMaxThreshold);
+        .def("GetMaxThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMaxThreshold)
+        .def("GetCorrectionDistances", &ProfilerStreaming::PostProcess::DataSlicer::GetCorrectionDistances);
 }
