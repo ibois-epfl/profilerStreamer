@@ -1,0 +1,22 @@
+[project]
+name = "profilerStreamer"
+version = "0.0.1"
+authors = [
+  { name="Damien Gilliard", email="damien.gilliard@epfl.ch" },
+]
+description = "A python binding to stream data from profiler and rangefinder hardware over TCP and OPCUA"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["*LICENSE"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["profiler_streamer*"]
+
+[tool.setuptools.package-data]
+profiler_streamer = ["profiler_streamer/bindings/*.pyd", "profiler_streamer/bindings/*.dll"]
