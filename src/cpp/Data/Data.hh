@@ -18,7 +18,7 @@ namespace ProfilerStreaming::SpatialData
         @param timestamp A time point representing the timestamp associated with the point cloud.
         */
         PointCloudWithTimestamp(const std::vector<Eigen::Vector3d>& points, 
-                                const std::chrono::time_point<std::chrono::system_clock>& timestamp)
+                                const std::chrono::time_point<std::chrono::high_resolution_clock>& timestamp)
             : points(points), timestamp(timestamp) {}
         
         /*
@@ -47,7 +47,7 @@ namespace ProfilerStreaming::SpatialData
         /*
         The timestamp associated with the point cloud, as a private member.
         */
-        std::chrono::time_point<std::chrono::system_clock> timestamp;
+        std::chrono::time_point<std::chrono::high_resolution_clock> timestamp;
     };
 
 
