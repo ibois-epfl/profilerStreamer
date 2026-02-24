@@ -73,6 +73,8 @@ namespace ProfilerStreaming::PostProcess
             uint8_t GetNumberOfSegments() const { return this->numberOfSegments; }
             double GetMinThreshold() const { return this->minThreshold; }
             double GetMaxThreshold() const { return this->maxThreshold; }
+            std::vector<double> GetCorrectionDistances() const { return this->correctionDistances; }
+            
         
         private:
             /*
@@ -107,6 +109,8 @@ namespace ProfilerStreaming::PostProcess
             The maximum value in the rangefinder values, as a private member.
             */
             double maxThreshold = 0;
+
+            std::vector<double> correctionDistances;
     };
 }
 
