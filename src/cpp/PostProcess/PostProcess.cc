@@ -102,35 +102,39 @@ namespace ProfilerStreaming::PostProcess
     {
         std::vector<Eigen::Vector3d> regularizedProfiles;
 
-        // TODO: Add rotation around axis for each slice.
         for (int i = 0; i < this->rangeFinderDistancesSortedIntoSegments.size(); ++i)
         {
-            double speed = (this->rangeFinderDistancesSortedIntoSegments.at(i).back().GetPoints().at(0).x() 
-                            - this->rangeFinderDistancesSortedIntoSegments.at(i).front().GetPoints().at(0).x()) 
-                            / std::chrono::duration_cast<std::chrono::milliseconds>(this->rangeFinderDistancesSortedIntoSegments.at(i).back().GetTimestamp() 
-                                                                                    - this->rangeFinderDistancesSortedIntoSegments.at(i).front().GetTimestamp()).count();
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profileVector = this->profilesSortedIntoSegments.at(i);
+            int windowingSize = 3;
+            for (int j = 0; j < profileVector.size() - 1; ++j)
             for (const auto& profileWithTimestamp : profileVector)
             {
-                for (const auto& rangeFinderData : this->rangeFinderDistancesSortedIntoSegments.at(i))
+                auto tProfile = profileVector.at(j).GetTimestamp();
+                for (int k = windowingSize; k < rangeFinderDistancesSortedIntoSegments.at(i).size() - windowingSize; ++k)
                 {
-                    if (rangeFinderData.GetTimestamp() < profileWithTimestamp.GetTimestamp()) // IE if the rangefinder data is from before the profile data, and we are actually moving, we assume the profile data is valid and should be added to the point cloud.
+                    if (rangeFinderDistancesSortedIntoSegments.at(i).at(k).GetTimestamp() < tProfile) // IE if the rangefinder data is from before the profile data, and we are actually moving, we assume the profile data is valid and should be added to the point cloud.
                     {
                         continue;
                     }
                     else
                     {
-                        std::chrono::duration<double> timeDifference = profileWithTimestamp.GetTimestamp() - rangeFinderData.GetTimestamp();
-                        std::chrono::milliseconds timeDifferenceInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(timeDifference);
-                        double correctionDistance = speed * timeDifferenceInMilliseconds.count();
-                        for (const auto& point : profileWithTimestamp.GetPoints())
+                        auto t_rangefinder = rangeFinderDistancesSortedIntoSegments.at(i).at(k).GetTimestamp();
+                        std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> windowedRangeFinderData = {};
+                        for (int l = k - windowingSize; l < k + windowingSize; ++l)
+                        {
+                            windowedRangeFinderData.push_back(rangeFinderDistancesSortedIntoSegments.at(i).at(l));
+                        }
+                        auto [slope, intercept] = ProfilerStreaming::Utils::linearRegressionSlope(windowedRangeFinderData, windowingSize);
+                        double x_from_linear_regression = slope * std::chrono::duration_cast<std::chrono::microseconds>(t_rangefinder - tProfile).count() + intercept;
+                        for (const auto& point : profileVector.at(j).GetPoints())
                         {
                             Eigen::Vector3d correctedPoint;
-                            correctedPoint.x() = rangeFinderData.GetPoints().at(0).x() + correctionDistance;
+                            correctedPoint.x() = x_from_linear_regression / 10.0;
                             correctedPoint.y() = point.y();
                             correctedPoint.z() = point.z();
                             regularizedProfiles.push_back(correctedPoint);
                         }
+                        this->correctionDistances.push_back(x_from_linear_regression / 10.0);
                         break;
                     }
                 }
