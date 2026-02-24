@@ -31,39 +31,39 @@ namespace ProfilerStreaming::PostProcess
             }
         }
         
-        bool switchFlag = false;
+        bool isIdle = false;
 
         // Sort the profiles into the detected segments
         for (int i = 0; i < this->unsortedRangeFinderDistances.size() - nIntervals; ++i)
         {
-            double distanceDerivative = (this->unsortedRangeFinderDistances.at(i+nIntervals).GetPoints().at(0).x() 
+            double speed = (this->unsortedRangeFinderDistances.at(i+nIntervals).GetPoints().at(0).x() 
                                                   - this->unsortedRangeFinderDistances.at(i).GetPoints().at(0).x()) 
                                         / std::chrono::duration_cast<std::chrono::milliseconds>(this->unsortedRangeFinderDistances.at(i+nIntervals).GetTimestamp() 
                                                                                               - this->unsortedRangeFinderDistances.at(i).GetTimestamp()).count();
-            if (std::abs(distanceDerivative) < 0.005 && rangeFinderDistanceSegments.size() == 0) // IE if in measurmentIntervalInMilliseconds ms the speed was under 5mm/second, we assume no movement.
+            if (std::abs(speed) < 0.005 && rangeFinderDistanceSegments.size() == 0) // IE if in measurmentIntervalInMilliseconds ms the speed was under 5mm/second, we assume no movement.
             {
                 // in this case, we haven't started to actually scan.
                 continue;
             }
             else
             {
-                if (std::abs(distanceDerivative) < 0.005 && switchFlag == false)
+                if (std::abs(speed) < 0.005 && isIdle == false)
                 {
                     rangeFinderDistanceSegments.push_back({});
-                    switchFlag = true;
+                    isIdle = true;
                 }
-                else if (std::abs(distanceDerivative) < 0.005 && switchFlag == true)
+                else if (std::abs(speed) < 0.005 && isIdle == true)
                 {
                     continue;
                 }
-                else if (std::abs(distanceDerivative) >= 0.005)
+                else if (std::abs(speed) >= 0.005)
                 {
                     if (rangeFinderDistanceSegments.size() == 0)
                     {
                         rangeFinderDistanceSegments.push_back({});
                     }
                     rangeFinderDistanceSegments.back().push_back(this->unsortedRangeFinderDistances.at(i));
-                    switchFlag = false;
+                    isIdle = false;
                 }
             }
         }
@@ -107,7 +107,6 @@ namespace ProfilerStreaming::PostProcess
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profileVector = this->profilesSortedIntoSegments.at(i);
             int windowingSize = 3;
             for (int j = 0; j < profileVector.size() - 1; ++j)
-            for (const auto& profileWithTimestamp : profileVector)
             {
                 auto tProfile = profileVector.at(j).GetTimestamp();
                 for (int k = windowingSize; k < rangeFinderDistancesSortedIntoSegments.at(i).size() - windowingSize; ++k)
