@@ -64,10 +64,10 @@ namespace ProfilerStreaming::PostProcess
             /*
             A python binding friendly version of ComputeRegularizedProfiles, that returns the regularized profiles as a vector of arrays of doubles, instead of a vector of Eigen::Vector3d, to avoid issues with binding Eigen types to Python.
 
-            @return std::vector<std::array<double, 3>> a vector of regularized profiles, 
+            @return std::vector<std::vector<double>> a vector of regularized profiles, 
                     where each profile has been corrected based on the corresponding rangefinder data, and is represented as an array of doubles with 3 elements (x, y, z).
             */
-            std::vector<std::array<double, 3>> ComputeRegularizedProfilesAsArray();
+            std::vector<std::vector<double>> ComputeRegularizedProfilesAsArray();
 
             // a few getters
             uint8_t GetNumberOfSegments() const { return this->numberOfSegments; }
