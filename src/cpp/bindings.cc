@@ -47,7 +47,7 @@ NB_MODULE(profilerStreamerBindings, m)
         .def("Slice", &ProfilerStreaming::PostProcess::DataSlicer::Slice, nanobind::arg("measurmentIntervalInMilliseconds"), "Slices the data into segments based on the specified measurement interval in milliseconds, which is used to determine which data points belong to the same segment.")
         .def("GetProfilesSortedIntoSegments", &ProfilerStreaming::PostProcess::DataSlicer::GetProfilesSortedIntoSegments)
         .def("GetRangeFinderDistancesSortedIntoSegments", &ProfilerStreaming::PostProcess::DataSlicer::GetRangeFinderDistancesSortedIntoSegments)
-        .def("ComputeRegularizedProfiles", &ProfilerStreaming::PostProcess::DataSlicer::ComputeRegularizedProfiles)
+        .def("ComputeRegularizedProfilesAsArray", &ProfilerStreaming::PostProcess::DataSlicer::ComputeRegularizedProfilesAsArray)
         .def("GetNumberOfSegments", &ProfilerStreaming::PostProcess::DataSlicer::GetNumberOfSegments)
         .def("GetMinThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMinThreshold)
         .def("GetMaxThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMaxThreshold);
