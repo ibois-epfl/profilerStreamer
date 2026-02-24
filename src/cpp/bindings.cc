@@ -15,7 +15,7 @@ NB_MODULE(profilerStreamerBindings, m)
     nanobind::class_<ProfilerStreaming::SpatialData::PointCloudWithTimestamp>(m, "PointCloudWithTimestamp")
         .def(nanobind::init<const std::vector<Eigen::Vector3d>&, const std::chrono::time_point<std::chrono::system_clock>&>())
         .def("GetPoints", &ProfilerStreaming::SpatialData::PointCloudWithTimestamp::GetPoints, "Returns the point cloud data as a vector of Eigen::Vector3d, where each Vector3d represents a point in 3D space with x, y, z coordinates.")
-        .def("GetTimestamp", &ProfilerStreaming::SpatialData::PointCloudWithTimestamp::GetTimestamp, "Returns the timestamp associated with the point cloud data.")
+        .def("GetTimeStampAsInt", &ProfilerStreaming::SpatialData::PointCloudWithTimestamp::GetTimeStampAsInt, "Returns the timestamp as an integer representing the number of milliseconds since the epoch.")
         .def("GetNumPoints", &ProfilerStreaming::SpatialData::PointCloudWithTimestamp::GetNumPoints, "Returns the number of points in the point cloud.");
 
     nanobind::class_<ProfilerStreaming::Communicate::TCPCommunicator>(m, "TCPCommunicator")
