@@ -11,6 +11,7 @@
 #include <utility>
 #include <chrono>
 #include <atomic>
+#include <mutex>
 
 // 3rd-party libraries
 #include <open3d/Open3D.h>
@@ -125,6 +126,32 @@ namespace ProfilerStreaming::Communicate
             The OPC UA client, as a private member. This is used to manage the connection and communication with the OPC UA server.
             */
             UA_Client* client; // Placeholder for actual OPC UA client
+    };
+
+    class Chronometer {
+    public:
+        using ChronoCallback = std::function<void(std::chrono::time_point<std::chrono::high_resolution_clock>)>;
+
+        static Chronometer* GetInstance() 
+        {
+            std::lock_guard<std::mutex> lock(instanceMutex);
+            if (instance == nullptr)
+            {
+                instance = new Chronometer();
+            }
+            return instance;
+        }
+
+        std::chrono::time_point<std::chrono::high_resolution_clock> GetCurrentTime() const 
+        {
+            return std::chrono::high_resolution_clock::now();
+        }
+
+    private:
+        Chronometer() {}
+
+        static Chronometer* instance;
+        static std::mutex instanceMutex;
     };
 
     /*

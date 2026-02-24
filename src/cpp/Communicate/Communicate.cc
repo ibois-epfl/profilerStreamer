@@ -79,12 +79,14 @@ namespace ProfilerStreaming::Communicate
                 this->streamHandle->Start();
             }
             std::vector<Eigen::Vector3d> points;
-            auto timestamp = std::chrono::system_clock::now();
+            auto timestamp = std::chrono::high_resolution_clock::now(); // Default timestamp in case no profile is available
+            Chronometer* chronometer = Chronometer::GetInstance();
+
             if( this->streamHandle->ProfileAvailable( ) )
             {
                 Baumer::OXApi::UdpStreaming::ProfilePacket profile = this->streamHandle->ReadProfile();
                 const Baumer::OXApi::Types::Profile profileInfo = this->communicationHandle->GetProfile();
-                auto timestamp = std::chrono::system_clock::now();
+                auto timestamp = chronometer->GetCurrentTime();
                 
                 for (u_int i = 0; i < profile.Length; ++i)
                 {
@@ -191,7 +193,8 @@ namespace ProfilerStreaming::Communicate
             throw std::runtime_error("Unexpected data type received from OPC UA server");
         }
 
-        auto timestamp = std::chrono::system_clock::now();
+        Chronometer* chronometer = Chronometer::GetInstance();
+        auto timestamp = chronometer->GetCurrentTime();
         return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
     }
 
@@ -247,4 +250,6 @@ namespace ProfilerStreaming::Communicate
         this->recordingSwitch = false;
     }
 
+    ProfilerStreaming::Communicate::Chronometer* ProfilerStreaming::Communicate::Chronometer::instance = nullptr;
+    std::mutex ProfilerStreaming::Communicate::Chronometer::instanceMutex;
 }
