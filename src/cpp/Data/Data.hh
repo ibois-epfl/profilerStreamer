@@ -60,6 +60,6 @@ namespace ProfilerStreaming::SpatialData
     class PCWT2Open3DConverter
     {
         public:
-            static open3d::geometry::PointCloud Convert(std::vector<Eigen::Vector3d>& regularizedProfiles);
+            static open3d::geometry::PointCloud Convert(std::vector<std::vector<Eigen::Vector3d>>& regularizedProfiles);
     };
 }
