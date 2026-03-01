@@ -98,12 +98,13 @@ namespace ProfilerStreaming::PostProcess
         return std::make_pair(0,0);
     }
 
-    std::vector<Eigen::Vector3d> DataSlicer::ComputeRegularizedProfiles()
+    std::vector<std::vector<Eigen::Vector3d>> DataSlicer::ComputeRegularizedProfiles()
     {
-        std::vector<Eigen::Vector3d> regularizedProfiles;
+        std::vector<std::vector<Eigen::Vector3d>> allRegularizedProfiles = {};
 
         for (int i = 0; i < this->rangeFinderDistancesSortedIntoSegments.size(); ++i)
         {
+            std::vector<Eigen::Vector3d> regularizedProfiles;
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profileVector = this->profilesSortedIntoSegments.at(i);
             int windowingSize = 3;
             for (int j = 0; j < profileVector.size() - 1; ++j)
@@ -138,18 +139,24 @@ namespace ProfilerStreaming::PostProcess
                     }
                 }
             }
+            allRegularizedProfiles.push_back(regularizedProfiles);
         }
-        return regularizedProfiles;
+        return allRegularizedProfiles;
     }
 
-    std::vector<std::vector<double>> DataSlicer::ComputeRegularizedProfilesAsArray()
+    std::vector<std::vector<std::vector<double>>> DataSlicer::ComputeRegularizedProfilesAsArray()
     {
-        std::vector<std::vector<double>> regularizedProfilesAsArray;
-        std::vector<Eigen::Vector3d> regularizedProfiles = this->ComputeRegularizedProfiles();
-        for (const auto& point : regularizedProfiles)
+        std::vector<std::vector<std::vector<double>>> regularizedProfilesAsArray;
+        std::vector<std::vector<Eigen::Vector3d>> regularizedProfilesIntoSegments = this->ComputeRegularizedProfiles();
+        for (const std::vector<Eigen::Vector3d>& segment : regularizedProfilesIntoSegments)
         {
-            std::vector<double> pointAsArray = {point.x(), point.y(), point.z()};
-            regularizedProfilesAsArray.push_back(pointAsArray);
+            std::vector<std::vector<double>> segmentAsArray;
+            for (const auto& point : segment)
+            {
+                std::vector<double> pointAsArray = {point.x(), point.y(), point.z()};
+                segmentAsArray.push_back(pointAsArray);
+            }
+            regularizedProfilesAsArray.push_back(segmentAsArray);
         }
         return regularizedProfilesAsArray;
     }
