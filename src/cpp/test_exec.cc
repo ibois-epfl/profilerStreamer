@@ -46,12 +46,15 @@ int main(int argc, char* argv[])
     transformationMatrix(0, 3) = 4834;
     transformationMatrix(1, 3) = y-339.63;
     transformationMatrix(2, 3) = z-362.92;
-    std::vector<Eigen::Vector3d> regularizedProfile = dataSlicer.ComputeRegularizedProfiles();
-    for (auto& point : regularizedProfile)
+    std::vector<std::vector<Eigen::Vector3d>> regularizedProfiles = dataSlicer.ComputeRegularizedProfiles();
+    for (auto& segment : regularizedProfiles)
     {
-        point = (transformationMatrix * firstTransformationMatrix * point.homogeneous()).head<3>();
+        for (auto& point : segment)
+        {
+            point = (transformationMatrix * firstTransformationMatrix * point.homogeneous()).head<3>();
+        }
     }
-    open3d::geometry::PointCloud combinedPointCloud = ProfilerStreaming::SpatialData::PCWT2Open3DConverter::Convert(regularizedProfile);
+    open3d::geometry::PointCloud combinedPointCloud = ProfilerStreaming::SpatialData::PCWT2Open3DConverter::Convert(regularizedProfiles);
     std::cout << "Combined point cloud has " << combinedPointCloud.points_.size() << " points." << std::endl;
     open3d::io::WritePointCloud("combined_point_cloud.ply", combinedPointCloud);
     return 0;
