@@ -31,39 +31,39 @@ namespace ProfilerStreaming::PostProcess
             }
         }
         
-        bool switchFlag = false;
+        bool isIdle = false;
 
         // Sort the profiles into the detected segments
         for (int i = 0; i < this->unsortedRangeFinderDistances.size() - nIntervals; ++i)
         {
-            double distanceDerivative = (this->unsortedRangeFinderDistances.at(i+nIntervals).GetPoints().at(0).x() 
+            double speed = (this->unsortedRangeFinderDistances.at(i+nIntervals).GetPoints().at(0).x() 
                                                   - this->unsortedRangeFinderDistances.at(i).GetPoints().at(0).x()) 
                                         / std::chrono::duration_cast<std::chrono::milliseconds>(this->unsortedRangeFinderDistances.at(i+nIntervals).GetTimestamp() 
                                                                                               - this->unsortedRangeFinderDistances.at(i).GetTimestamp()).count();
-            if (std::abs(distanceDerivative) < 0.005 && rangeFinderDistanceSegments.size() == 0) // IE if in measurmentIntervalInMilliseconds ms the speed was under 5mm/second, we assume no movement.
+            if (std::abs(speed) < 0.005 && rangeFinderDistanceSegments.size() == 0) // IE if in measurmentIntervalInMilliseconds ms the speed was under 5mm/second, we assume no movement.
             {
                 // in this case, we haven't started to actually scan.
                 continue;
             }
             else
             {
-                if (std::abs(distanceDerivative) < 0.005 && switchFlag == false)
+                if (std::abs(speed) < 0.005 && isIdle == false)
                 {
                     rangeFinderDistanceSegments.push_back({});
-                    switchFlag = true;
+                    isIdle = true;
                 }
-                else if (std::abs(distanceDerivative) < 0.005 && switchFlag == true)
+                else if (std::abs(speed) < 0.005 && isIdle == true)
                 {
                     continue;
                 }
-                else if (std::abs(distanceDerivative) >= 0.005)
+                else if (std::abs(speed) >= 0.005)
                 {
                     if (rangeFinderDistanceSegments.size() == 0)
                     {
                         rangeFinderDistanceSegments.push_back({});
                     }
                     rangeFinderDistanceSegments.back().push_back(this->unsortedRangeFinderDistances.at(i));
-                    switchFlag = false;
+                    isIdle = false;
                 }
             }
         }
@@ -98,44 +98,66 @@ namespace ProfilerStreaming::PostProcess
         return std::make_pair(0,0);
     }
 
-    std::vector<Eigen::Vector3d> DataSlicer::ComputeRegularizedProfiles()
+    std::vector<std::vector<Eigen::Vector3d>> DataSlicer::ComputeRegularizedProfiles()
     {
-        std::vector<Eigen::Vector3d> regularizedProfiles;
+        std::vector<std::vector<Eigen::Vector3d>> allRegularizedProfiles = {};
 
-        // TODO: Add rotation around axis for each slice.
         for (int i = 0; i < this->rangeFinderDistancesSortedIntoSegments.size(); ++i)
         {
-            double speed = (this->rangeFinderDistancesSortedIntoSegments.at(i).back().GetPoints().at(0).x() 
-                            - this->rangeFinderDistancesSortedIntoSegments.at(i).front().GetPoints().at(0).x()) 
-                            / std::chrono::duration_cast<std::chrono::milliseconds>(this->rangeFinderDistancesSortedIntoSegments.at(i).back().GetTimestamp() 
-                                                                                    - this->rangeFinderDistancesSortedIntoSegments.at(i).front().GetTimestamp()).count();
+            std::vector<Eigen::Vector3d> regularizedProfiles;
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profileVector = this->profilesSortedIntoSegments.at(i);
-            for (const auto& profileWithTimestamp : profileVector)
+            int windowingSize = 3;
+            for (int j = 0; j < profileVector.size() - 1; ++j)
             {
-                for (const auto& rangeFinderData : this->rangeFinderDistancesSortedIntoSegments.at(i))
+                auto tProfile = profileVector.at(j).GetTimestamp();
+                for (int k = windowingSize; k < rangeFinderDistancesSortedIntoSegments.at(i).size() - windowingSize; ++k)
                 {
-                    if (rangeFinderData.GetTimestamp() < profileWithTimestamp.GetTimestamp()) // IE if the rangefinder data is from before the profile data, and we are actually moving, we assume the profile data is valid and should be added to the point cloud.
+                    if (rangeFinderDistancesSortedIntoSegments.at(i).at(k).GetTimestamp() < tProfile) // IE if the rangefinder data is from before the profile data, and we are actually moving, we assume the profile data is valid and should be added to the point cloud.
                     {
                         continue;
                     }
                     else
                     {
-                        std::chrono::duration<double> timeDifference = profileWithTimestamp.GetTimestamp() - rangeFinderData.GetTimestamp();
-                        std::chrono::milliseconds timeDifferenceInMilliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(timeDifference);
-                        double correctionDistance = speed * timeDifferenceInMilliseconds.count();
-                        for (const auto& point : profileWithTimestamp.GetPoints())
+                        auto t_rangefinder = rangeFinderDistancesSortedIntoSegments.at(i).at(k).GetTimestamp();
+                        std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> windowedRangeFinderData = {};
+                        for (int l = k - windowingSize; l < k + windowingSize; ++l)
+                        {
+                            windowedRangeFinderData.push_back(rangeFinderDistancesSortedIntoSegments.at(i).at(l));
+                        }
+                        auto [slope, intercept] = ProfilerStreaming::Utils::linearRegressionSlope(windowedRangeFinderData, windowingSize);
+                        double x_from_linear_regression = slope * std::chrono::duration_cast<std::chrono::microseconds>(t_rangefinder - tProfile).count() + intercept;
+                        for (const auto& point : profileVector.at(j).GetPoints())
                         {
                             Eigen::Vector3d correctedPoint;
-                            correctedPoint.x() = rangeFinderData.GetPoints().at(0).x() + correctionDistance;
+                            correctedPoint.x() = x_from_linear_regression / 10.0;
                             correctedPoint.y() = point.y();
                             correctedPoint.z() = point.z();
                             regularizedProfiles.push_back(correctedPoint);
                         }
+                        this->correctionDistances.push_back(x_from_linear_regression / 10.0);
                         break;
                     }
                 }
             }
+            allRegularizedProfiles.push_back(regularizedProfiles);
         }
-        return regularizedProfiles;
+        return allRegularizedProfiles;
+    }
+
+    std::vector<std::vector<std::vector<double>>> DataSlicer::ComputeRegularizedProfilesAsArray()
+    {
+        std::vector<std::vector<std::vector<double>>> regularizedProfilesAsArray;
+        std::vector<std::vector<Eigen::Vector3d>> regularizedProfilesIntoSegments = this->ComputeRegularizedProfiles();
+        for (const std::vector<Eigen::Vector3d>& segment : regularizedProfilesIntoSegments)
+        {
+            std::vector<std::vector<double>> segmentAsArray;
+            for (const auto& point : segment)
+            {
+                std::vector<double> pointAsArray = {point.x(), point.y(), point.z()};
+                segmentAsArray.push_back(pointAsArray);
+            }
+            regularizedProfilesAsArray.push_back(segmentAsArray);
+        }
+        return regularizedProfilesAsArray;
     }
 }

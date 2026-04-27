@@ -3,3 +3,11 @@ build/
 *.dll
 *.pdb
 *.pyd
+
+*egg-info
+__pycache__/
+*.egg
+dist/
+
+
+*.gh

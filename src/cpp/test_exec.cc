@@ -18,11 +18,12 @@ int main(int argc, char* argv[])
     std::atomic<bool> record = true;
     ProfilerStreaming::Communicate::TCPRecorder* tcpRecorder = new ProfilerStreaming::Communicate::TCPRecorder(tcpCommunicator, 5);
     ProfilerStreaming::Communicate::OPCUARecorder* opcuaRecorder = new ProfilerStreaming::Communicate::OPCUARecorder(opcuaCommunicator, 5);
-    tcpRecorder->Record(record);
-    opcuaRecorder->Record(record);
+    tcpRecorder->StartRecording();
+    opcuaRecorder->StartRecording();
 
-    std::this_thread::sleep_for(std::chrono::seconds(30));
-    record = false;
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    tcpRecorder->StopRecording();
+    opcuaRecorder->StopRecording();
     std::this_thread::sleep_for(std::chrono::milliseconds(500)); 
     profilesOverTime = tcpRecorder->GetRecordedData();
     rangefinderDataOverTime = opcuaRecorder->GetRecordedData();
@@ -32,7 +33,6 @@ int main(int argc, char* argv[])
 
     int nPointsInFirstProfile = profilesOverTime.size() > 0 ? profilesOverTime.at(0).GetNumPoints() : 0;
     int nPointsInLastProfile = profilesOverTime.size() > 0 ? profilesOverTime.at(profilesOverTime.size() - 1).GetNumPoints() : 0;
-    
     ProfilerStreaming::PostProcess::DataSlicer dataSlicer(profilesOverTime, rangefinderDataOverTime);
     std::pair<double, double> thresholds = dataSlicer.Slice(1000);
     Eigen::Matrix3d rotationXAxis = Eigen::AngleAxisd(1.5 * M_PI / 180, Eigen::Vector3d::UnitX()).toRotationMatrix();
@@ -46,12 +46,15 @@ int main(int argc, char* argv[])
     transformationMatrix(0, 3) = 4834;
     transformationMatrix(1, 3) = y-339.63;
     transformationMatrix(2, 3) = z-362.92;
-    std::vector<Eigen::Vector3d> regularizedProfile = dataSlicer.ComputeRegularizedProfiles();
-    for (auto& point : regularizedProfile)
+    std::vector<std::vector<Eigen::Vector3d>> regularizedProfiles = dataSlicer.ComputeRegularizedProfiles();
+    for (auto& segment : regularizedProfiles)
     {
-        point = (transformationMatrix * firstTransformationMatrix * point.homogeneous()).head<3>();
+        for (auto& point : segment)
+        {
+            point = (transformationMatrix * firstTransformationMatrix * point.homogeneous()).head<3>();
+        }
     }
-    open3d::geometry::PointCloud combinedPointCloud = ProfilerStreaming::SpatialData::PCWT2Open3DConverter::Convert(regularizedProfile);
+    open3d::geometry::PointCloud combinedPointCloud = ProfilerStreaming::SpatialData::PCWT2Open3DConverter::Convert(regularizedProfiles);
     std::cout << "Combined point cloud has " << combinedPointCloud.points_.size() << " points." << std::endl;
     open3d::io::WritePointCloud("combined_point_cloud.ply", combinedPointCloud);
     return 0;
