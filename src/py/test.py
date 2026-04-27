@@ -34,7 +34,7 @@ def main():
     opcua_recorder = psb.OPCUARecorder(opcua_communicator, 5)
     tcp_recorder.StartRecording()
     opcua_recorder.StartRecording()
-    time.sleep(240)
+    time.sleep(220)
     tcp_recorder.StopRecording()
     opcua_recorder.StopRecording()
 
@@ -52,10 +52,8 @@ def main():
         return
     first_sorted_rangefinder_data_timestamp = slicer.GetRangeFinderDistancesSortedIntoSegments()[0][0].GetTimeStampAsInt()
     first_sorted_profile_timestamp = slicer.GetProfilesSortedIntoSegments()[0][0].GetTimeStampAsInt()
-    print(f"First sorted profile timestamp: {first_sorted_profile_timestamp}, first sorted rangefinder timestamp: {first_sorted_rangefinder_data_timestamp}")
     pc_as_list = slicer.ComputeRegularizedProfilesAsArray()
     correction_distances = slicer.GetCorrectionDistances()
-    print(correction_distances)
     tcp_communicator.Disconnect()
     opcua_communicator.Disconnect()
     return pc_as_list
@@ -65,12 +63,12 @@ if __name__ == "__main__":
     a = []
     run = True
     if run:
-        transform = Rhino.Geometry.Transform.RotationZYX(0, 0, 1.5 / 180 * 3.141592653589793)
+        transform = Rhino.Geometry.Transform.RotationZYX(0, 0, -0.5 / 180 * 3.141592653589793)
         transform.M00 = -1
         transform.M11 = -1
         transform.M03 = 4828
-        transform.M13 = y - 330.0
-        transform.M23 = z - 359.5
+        transform.M13 = y - 326.0
+        transform.M23 = z - 374.5
         result = []
         n_seg = None
         rh_pc = Rhino.Geometry.PointCloud()
@@ -79,9 +77,11 @@ if __name__ == "__main__":
         
         for i, segment in enumerate(res):
             rh_pc = Rhino.Geometry.PointCloud()
+            rh_pts = []
             for point in segment:
                 rh_pt = Rhino.Geometry.Point3d(point[0], point[1], point[2])
-                rh_pc.Add(rh_pt)
+                rh_pts.append(rh_pt)
+            rh_pc.AddRange(rh_pts)
             rh_pc.Transform(transform)
             a.append(rh_pc)
     a = a
