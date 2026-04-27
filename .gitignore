@@ -1,5 +1,12 @@
 build/
+__pycache__/
 
 *.dll
 *.pdb
 *.pyd
+*.pyc
+*.whl
+
+*.gz
+
+*.gh
