@@ -1,6 +1,10 @@
 
 cmake_minimum_required (VERSION 3.18)
-project (profilerStreamer)
+
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version" PROJECT_VERSION_RAW)
+string(STRIP "${PROJECT_VERSION_RAW}" PROJECT_VERSION)
+
+project (profilerStreamer VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(CMAKE_GENERATOR_PLATFORM x64 CACHE STRING "Target platform")
 if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -107,7 +111,6 @@ target_include_directories(${BINDINGS_MODULE_NAME}
 set_target_properties(${BINDINGS_MODULE_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/src/py/bindings/)
 # The following is just to avoid annoying /Debug or /Release subfolders for the output .pyd file.
 set_target_properties(${BINDINGS_MODULE_NAME} PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/src/py/bindings/"
     LIBRARY_OUTPUT_DIRECTORY_DEBUG "${PROJECT_SOURCE_DIR}/src/py/bindings/"
     LIBRARY_OUTPUT_DIRECTORY_RELEASE "${PROJECT_SOURCE_DIR}/src/py/bindings/"
     LIBRARY_OUTPUT_DIRECTORY_RELWITHDEBINFO "${PROJECT_SOURCE_DIR}/src/py/bindings/"
