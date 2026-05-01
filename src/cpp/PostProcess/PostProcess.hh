@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <chrono>
+#include <array>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -13,6 +14,7 @@
 // Project headers
 #include "../Device/Device.hh"
 #include "../Data/Data.hh"
+#include "../Utils/Utils.hh"
 
 namespace ProfilerStreaming::PostProcess
 {
@@ -55,15 +57,25 @@ namespace ProfilerStreaming::PostProcess
             to account for the movement of the profiler during scanning. 
             It assumes that the profiles and rangefinder data have already been sorted into segments using the Slice method.
 
-            @return std::vector<Eigen::Vector3d> a vector of regularized profiles, 
+            @return std::vector<std::vector<Eigen::Vector3d>> a vector of vectors of regularized profiles, 
                     where each profile has been corrected based on the corresponding rangefinder data.
             */
-            std::vector<Eigen::Vector3d> ComputeRegularizedProfiles();
+            std::vector<std::vector<Eigen::Vector3d>> ComputeRegularizedProfiles();
+
+            /*
+            A python binding friendly version of ComputeRegularizedProfiles, that returns the regularized profiles as a vector of arrays of doubles, instead of a vector of Eigen::Vector3d, to avoid issues with binding Eigen types to Python.
+
+            @return std::vector<std::vector<std::vector<double>>> a vector of vectors of regularized profiles, 
+                    where each profile has been corrected based on the corresponding rangefinder data, and is represented as an array of doubles with 3 elements (x, y, z). Each pass is stores in a different supra vector.
+            */
+            std::vector<std::vector<std::vector<double>>> ComputeRegularizedProfilesAsArray();
 
             // a few getters
             uint8_t GetNumberOfSegments() const { return this->numberOfSegments; }
             double GetMinThreshold() const { return this->minThreshold; }
             double GetMaxThreshold() const { return this->maxThreshold; }
+            std::vector<double> GetCorrectionDistances() const { return this->correctionDistances; }
+            
         
         private:
             /*
@@ -98,6 +110,7 @@ namespace ProfilerStreaming::PostProcess
             The maximum value in the rangefinder values, as a private member.
             */
             double maxThreshold = 0;
+
+            std::vector<double> correctionDistances;
     };
 }
-
