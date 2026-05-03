@@ -1,0 +1,112 @@
+{
+    "name": "ProfilerStreamer_stream",
+    "nickname": "ProfilerStreamer_stream",
+    "category": "ProfilerStreamer",
+    "subcategory": "stream",
+    "description": "This component streams the profiles and rangefinder data to reconstruct a 3D point cloud.",
+    "exposure": 4,
+    "instanceGuid": "953b7768-5e6f-42d3-9b17-22a128c4666c",
+    "ghpython": {
+        "hideOutput": true,
+        "hideInput": true,
+        "isAdvancedMode": true,
+        "marshalOutGuids": true,
+        "iconDisplay": 2,
+        "inputParameters": [
+            {
+                "name": "i_activate_component",
+                "nickname": "i_activate_component",
+                "description": "Activate the component.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "bool"
+            },
+            {
+                "name": "i_profiler_ip_address",
+                "nickname": "i_profiler_ip_address",
+                "description": "The IP address of the profiler device.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "str"
+            },
+            {
+                "name": "i_opcua_address",
+                "nickname": "i_opcua_address",
+                "description": "The IP address of the OPC UA device followed by the namespace index, for example '192.168.0.64:4840'.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "str"
+            },
+            {
+                "name": "i_recording_duration",
+                "nickname": "i_recording_duration",
+                "description": "The duration for recording, in seconds.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "float"
+            },
+            {
+                "name": "i_trajectories",
+                "nickname": "i_trajectories",
+                "description": "The trajectories for the profiler device in the form of a list of straight lines.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "list",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "line"
+            },
+            {
+                "name": "i_slicing_interval",
+                "nickname": "i_slicing_interval",
+                "description": "The time interval used to detect when the CNC movement starts and stops. 2 seconds is the default value.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "float"
+            },
+            {
+                "name": "i_calibration_data",
+                "nickname": "i_calibration_data",
+                "description": "The calibration data for the profiler device.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "bool"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "o_sliced_profiles",
+                "nickname": "o_sliced_profiles",
+                "description": "The regularised and sliced profiles.",
+                "optional": false,
+                "sourceCount": 0,
+                "graft": false
+            }
+        ]
+    }
+}
