@@ -6,7 +6,7 @@ namespace ProfilerStreaming::Utils
     {
         size_t n = data.size();
         if (n < 2) return {0.0, 0.0};
-        std::chrono::steady_clock::time_point t0 = data.at(referenceIndex).GetTimestamp();
+        std::chrono::high_resolution_clock::time_point t0 = data.at(referenceIndex).GetTimestamp();
         double sum_t = 0, sum_x = 0, sum_tt = 0, sum_tx = 0;
         for (const auto& d : data) 
         {
