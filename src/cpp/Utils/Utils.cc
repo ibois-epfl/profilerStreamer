@@ -24,4 +24,25 @@ namespace ProfilerStreaming::Utils
         double b = (sum_x - a * sum_t) / n;
         return {a, b};
     } 
+
+    Eigen::Matrix4d ComputeTransformationMatrix(const std::vector<Eigen::Vector3d>& sourcePoints, const std::vector<Eigen::Vector3d>& targetPoints)
+    {
+        if (sourcePoints.size() != targetPoints.size() || sourcePoints.empty()) 
+        {
+            throw std::runtime_error("Source and target points must be of the same size and not empty.");
+        }
+
+        Eigen::MatrixXd sourceMatrix(sourcePoints.size(), 3);
+        Eigen::MatrixXd targetMatrix(sourcePoints.size(), 3);
+
+        for (size_t i = 0; i < sourcePoints.size(); ++i) 
+        {
+            sourceMatrix.row(i) = sourcePoints[i];
+            targetMatrix.row(i) = targetPoints[i];
+        }
+
+        Eigen::Matrix4d transformation = Eigen::umeyama(sourceMatrix.transpose(), targetMatrix.transpose(), false);
+
+        return transformation;
+    }
 }

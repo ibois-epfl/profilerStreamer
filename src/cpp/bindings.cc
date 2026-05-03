@@ -53,3 +53,6 @@ NB_MODULE(profilerStreamerBindings, m)
         .def("GetMaxThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMaxThreshold)
         .def("GetCorrectionDistances", &ProfilerStreaming::PostProcess::DataSlicer::GetCorrectionDistances);
 }
+
+    nanobind::module_ utils_submodule = m.def_submodule("Utils", "A submodule of 'ProfilerStreaming' for utility functions");
+        utils_submodule.def("ComputeTransformationMatrix", &ProfilerStreaming::Utils::ComputeTransformationMatrix, nanobind::arg("sourcePoints"), nanobind::arg("targetPoints"), "Computes a transformation matrix that maps the source points to the target points using the Umeyama algorithm.");
