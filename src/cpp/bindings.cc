@@ -2,6 +2,7 @@
 #include "nanobind/stl/string.h"
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/vector.h>
+#include <nanobind/eigen/dense.h>
 
 #include "ProfilerStreamer.hh"
 
@@ -52,4 +53,7 @@ NB_MODULE(profilerStreamerBindings, m)
         .def("GetMinThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMinThreshold)
         .def("GetMaxThreshold", &ProfilerStreaming::PostProcess::DataSlicer::GetMaxThreshold)
         .def("GetCorrectionDistances", &ProfilerStreaming::PostProcess::DataSlicer::GetCorrectionDistances);
+
+    nanobind::module_ utils_submodule = m.def_submodule("Utils", "A submodule of 'ProfilerStreaming' for utility functions");
+        utils_submodule.def("ComputeTransformationMatrix", &ProfilerStreaming::Utils::ComputeTransformationMatrix, nanobind::arg("sourcePoints"), nanobind::arg("targetPoints"), "Computes a transformation matrix that maps the source points to the target points using the Umeyama algorithm.");
 }

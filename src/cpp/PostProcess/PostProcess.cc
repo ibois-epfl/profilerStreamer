@@ -106,7 +106,8 @@ namespace ProfilerStreaming::PostProcess
         {
             std::vector<Eigen::Vector3d> regularizedProfiles;
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profileVector = this->profilesSortedIntoSegments.at(i);
-            int windowingSize = 3;
+            // TODO: expose this variable.
+            int windowingSize = 20;
             for (int j = 0; j < profileVector.size() - 1; ++j)
             {
                 auto tProfile = profileVector.at(j).GetTimestamp();

@@ -1,4 +1,6 @@
 build/
+__pycache__/
+*.egg-info/
 
 *.dll
 *.pdb
@@ -9,5 +11,9 @@ __pycache__/
 *.egg
 dist/
 
+*.pyc
+*.whl
+
+*.gz
 
 *.gh

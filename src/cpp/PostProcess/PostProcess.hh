@@ -114,4 +114,3 @@ namespace ProfilerStreaming::PostProcess
             std::vector<double> correctionDistances;
     };
 }
-

@@ -1,0 +1,132 @@
+{
+    "name": "ProfilerStreamer_calibrate",
+    "nickname": "ProfilerStreamer_calibrate",
+    "category": "ProfilerStreamer",
+    "subcategory": "calibrate",
+    "description": "This component calibrates the transformation from device coordinates to machine coordinates.",
+    "exposure": 4,
+    "instanceGuid": "646d5c31-22b2-4182-bea1-b16e12eb6d0e",
+    "ghpython": {
+        "hideOutput": true,
+        "hideInput": true,
+        "isAdvancedMode": true,
+        "marshalOutGuids": true,
+        "iconDisplay": 2,
+        "inputParameters": [
+            {
+                "name": "i_activate_component",
+                "nickname": "i_activate_component",
+                "description": "Activate the component.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "bool"
+            },
+            {
+                "name": "i_profiler_ip_address",
+                "nickname": "i_profiler_ip_address",
+                "description": "The IP address of the profiler device.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "str"
+            },
+            {
+                "name": "i_opcua_address",
+                "nickname": "i_opcua_address",
+                "description": "The IP address of the OPC UA device followed by the namespace index, for example '192.168.0.64:4840'.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "str"
+            },
+            {
+                "name": "i_recording_duration",
+                "nickname": "i_recording_duration",
+                "description": "The duration for recording, in seconds.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "float"
+            },
+            {
+                "name": "i_trajectory",
+                "nickname": "i_trajectory",
+                "description": "The trajectory for the tool end in the form of a straight line.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "list",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "line"
+            },
+            {
+                "name": "i_timeout",
+                "nickname": "i_timeout",
+                "description": "The timeout duration for the rangefinder device, in seconds. If the rangefinder data does not change by 20mm within this duration, the recording will stop.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "float"
+            },
+            {
+                "name": "i_slicing_interval",
+                "nickname": "i_slicing_interval",
+                "description": "The time interval used to detect when the CNC movement starts and stops. 2 seconds is the default value.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "float"
+            },
+            {
+                "name": "i_reference_points",
+                "nickname": "i_reference_points",
+                "description": "The reference points in the machine coordinates that correspond to the points that will be selected from the point cloud as part of the calibration process. The order of the reference points should correspond to the order of the points selected from the point cloud.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "list",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "point"
+            }
+        ],
+        "outputParameters": [
+            {
+                "name": "o_calibration_data",
+                "nickname": "o_calibration_data",
+                "description": "The calibration data to calibrate the profiler data.",
+                "optional": false,
+                "sourceCount": 0,
+                "graft": false
+            },
+            {
+                "name": "o_calibrated_point_cloud",
+                "nickname": "o_calibrated_point_cloud",
+                "description": "The calibrated point cloud of the profiler data, for your info.",
+                "optional": false,
+                "sourceCount": 0,
+                "graft": false
+            }
+        ]
+    }
+}
