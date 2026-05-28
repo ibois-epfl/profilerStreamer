@@ -94,8 +94,8 @@ namespace ProfilerStreaming::Communicate
                         continue; // skip invalid points
                     else if (profile.X.at(i) && profile.Z.at(i))
                     {
-                        double y = (profile.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
-                        double z = (profile.Z.at(i)) / (double)profileInfo.Precision;
+                        double y = (profileInfo.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
+                        double z = (profileInfo.Z.at(i)) / (double)profileInfo.Precision;
                         points.emplace_back(0, y, z); // Assuming the global coord system has y in the profiler's x direction.
                     }
                 }
