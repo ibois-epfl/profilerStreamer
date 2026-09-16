@@ -233,7 +233,6 @@ namespace ProfilerStreaming::Communicate
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
-        this->recordingThread.detach();
     }
 
     void TCPRecorder::StopRecording()
@@ -270,7 +269,6 @@ namespace ProfilerStreaming::Communicate
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
-        this->recordingThread.detach();
     }
 
     void OPCUARecorder::StopRecording()
