@@ -8,20 +8,29 @@ namespace ProfilerStreaming::Utils
         if (n < 2) return {0.0, 0.0};
         std::chrono::high_resolution_clock::time_point t0 = data.at(referenceIndex).GetTimestamp();
         double sum_t = 0, sum_x = 0, sum_tt = 0, sum_tx = 0;
-        for (const auto& d : data) 
+        size_t nValid = 0;
+        for (const auto& d : data)
         {
+            if (d.GetPoints().empty())
+            {
+                // skip readings where no valid rangefinder point was captured
+                continue;
+            }
             double t = std::chrono::duration_cast<std::chrono::microseconds>(d.GetTimestamp() - t0).count();
             double x = d.GetPoints().at(0).x();
             sum_t += t;
             sum_x += x;
             sum_tt += t * t;
             sum_tx += t * x;
+            ++nValid;
         }
-        double denom = n * sum_tt - sum_t * sum_t;
+        if (nValid < 2) return {0.0, 0.0};
+
+        double denom = nValid * sum_tt - sum_t * sum_t;
         if (denom == 0) return {0.0, 0.0};
 
-        double a = (n * sum_tx - sum_t * sum_x) / denom;
-        double b = (sum_x - a * sum_t) / n;
+        double a = (nValid * sum_tx - sum_t * sum_x) / denom;
+        double b = (sum_x - a * sum_t) / nValid;
         return {a, b};
     } 
 
