@@ -208,7 +208,7 @@ namespace ProfilerStreaming::Communicate
             @param tcpCommunicator A reference to a TCPCommunicator object to use for recording data.
             @param sleepTimeMiliSec The time in milliseconds to wait between recording data points.
             */
-            TCPRecorder(TCPCommunicator& tcpCommunicator, int sleepTimeMiliSec): Recorder(sleepTimeMiliSec), tcpCommunicator(tcpCommunicator) {}
+            TCPRecorder(std::shared_ptr<TCPCommunicator> tcpCommunicator, int sleepTimeMiliSec): Recorder(sleepTimeMiliSec), tcpCommunicator(tcpCommunicator) {}
             ~TCPRecorder();
 
             /*
@@ -223,7 +223,7 @@ namespace ProfilerStreaming::Communicate
             /*
             A reference to the TCPCommunicator object used for recording data, as a private member.
             */
-            TCPCommunicator& tcpCommunicator;
+            std::shared_ptr<TCPCommunicator> tcpCommunicator;
     };
 
     class OPCUARecorder : public Recorder
@@ -234,7 +234,7 @@ namespace ProfilerStreaming::Communicate
             @param opcuaCommunicator A reference to an OPCUACommunicator object to use for recording data.
             @param sleepTimeMiliSec The time in milliseconds to wait between recording data points.
             */
-            OPCUARecorder(OPCUACommunicator& opcuaCommunicator, int sleepTimeMiliSec): Recorder(sleepTimeMiliSec), opcuaCommunicator(opcuaCommunicator) {}
+            OPCUARecorder(std::shared_ptr<OPCUACommunicator> opcuaCommunicator, int sleepTimeMiliSec): Recorder(sleepTimeMiliSec), opcuaCommunicator(opcuaCommunicator) {}
             ~OPCUARecorder();
             /*
             Records data from the OPCUACommunicator in a separate thread while the recording switch is true.
@@ -248,6 +248,6 @@ namespace ProfilerStreaming::Communicate
             /*
             A reference to the OPCUACommunicator object used for recording data, as a private member.
             */
-            OPCUACommunicator& opcuaCommunicator;
+            std::shared_ptr<OPCUACommunicator> opcuaCommunicator;
     };
 }
