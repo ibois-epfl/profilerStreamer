@@ -212,8 +212,24 @@ namespace ProfilerStreaming::Communicate
         {
             while (this->recordingSwitch)
             {
-                auto profile = this->tcpCommunicator.GetDataWithTimestamp();
-                this->recordedData.push_back(profile);
+                try
+                {
+                    auto profile = this->tcpCommunicator->GetDataWithTimestamp();
+                    std::lock_guard<std::mutex> lock(this->dataMutex);
+                    this->recordedData.push_back(profile);
+                }
+                catch (const std::exception& e)
+                {
+                    std::cerr << "TCPRecorder: error while recording, stopping: " << e.what() << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
+                catch (...)
+                {
+                    std::cerr << "TCPRecorder: unknown error while recording, stopping." << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
