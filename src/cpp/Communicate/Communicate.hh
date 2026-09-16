@@ -193,6 +193,11 @@ namespace ProfilerStreaming::Communicate
             std::thread recordingThread;
 
             std::atomic<bool> recordingSwitch;
+
+            /*
+            Mutex to protect access to recordedData from multiple threads.
+            */
+            std::mutex dataMutex;
     };
 
     class TCPRecorder : public Recorder
