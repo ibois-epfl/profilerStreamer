@@ -264,8 +264,24 @@ namespace ProfilerStreaming::Communicate
         {
             while (this->recordingSwitch)
             {
-                auto data = this->opcuaCommunicator.GetDataWithTimestamp();
-                this->recordedData.push_back(data);
+                try
+                {
+                    auto data = this->opcuaCommunicator->GetDataWithTimestamp();
+                    std::lock_guard<std::mutex> lock(this->dataMutex);
+                    this->recordedData.push_back(data);
+                }
+                catch (const std::exception& e)
+                {
+                    std::cerr << "OPCUARecorder: error while recording, stopping: " << e.what() << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
+                catch (...)
+                {
+                    std::cerr << "OPCUARecorder: unknown error while recording, stopping." << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
