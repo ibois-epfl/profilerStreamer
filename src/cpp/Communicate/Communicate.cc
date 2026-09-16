@@ -239,6 +239,18 @@ namespace ProfilerStreaming::Communicate
     void TCPRecorder::StopRecording()
     {
         this->recordingSwitch = false;
+        if (this->recordingThread.joinable())
+        {
+            // Wait briefly for thread to finish, then detach if still running
+            for (int i = 0; i < 5 && this->recordingThread.joinable(); ++i)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            if (this->recordingThread.joinable())
+            {
+                this->recordingThread.join();
+            }
+        }
     }
 
     OPCUARecorder::~OPCUARecorder()
