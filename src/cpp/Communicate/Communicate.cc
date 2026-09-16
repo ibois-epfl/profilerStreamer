@@ -15,14 +15,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
-            if (this->communicationHandle)
-                this->communicationHandle->Disconnect();
-            
-            if (this->streamHandle)
-                this->streamHandle->Stop();
-                this->streamHandle->Close();
-            this->streamHandle = nullptr;
-            this->communicationHandle = nullptr;
+            this->Shutdown();
         }
     }
 

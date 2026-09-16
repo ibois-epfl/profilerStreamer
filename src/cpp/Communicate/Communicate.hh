@@ -70,6 +70,21 @@ namespace ProfilerStreaming::Communicate
             */
             ProfilerStreaming::Device::DeviceType deviceType;
 
+            void shutdown() 
+            {
+                if (deviceType == Device::DeviceType::OX) 
+                {
+                    if (communicationHandle) communicationHandle->Disconnect();
+                    if (streamHandle) 
+                    {
+                        streamHandle->Stop();
+                        streamHandle->Close();
+                    }
+                    streamHandle = nullptr;
+                    communicationHandle = nullptr;
+                }
+            }
+
             /*
             The communication handle for the device, as a private member. This is used to manage the connection and communication with the device.
             */
