@@ -2,7 +2,6 @@
 #include "nanobind/stl/string.h"
 #include <nanobind/stl/pair.h>
 #include <nanobind/stl/vector.h>
-#include <nanobind/stl/shared_ptr.h>
 #include <nanobind/eigen/dense.h>
 
 #include "ProfilerStreamer.hh"
@@ -33,13 +32,13 @@ NB_MODULE(profilerStreamerBindings, m)
         .def("GetDataWithTimestamp", &ProfilerStreaming::Communicate::OPCUACommunicator::GetDataWithTimestamp, "Retrieves the point cloud data along with its timestamp from the OPC UA server.");
 
     nanobind::class_<ProfilerStreaming::Communicate::TCPRecorder>(m, "TCPRecorder")
-        .def(nanobind::init<std::shared_ptr<ProfilerStreaming::Communicate::TCPCommunicator>, int>(), nanobind::arg("tcpCommunicator"), nanobind::arg("recordingIntervalInMilliseconds"), "Initializes the TCPRecorder with a shared TCPCommunicator and a recording interval in milliseconds.")
+        .def(nanobind::init<ProfilerStreaming::Communicate::TCPCommunicator&, int>(), nanobind::arg("tcpCommunicator"), nanobind::arg("recordingIntervalInMilliseconds"), "Initializes the TCPRecorder with a reference to a TCPCommunicator and a recording interval in milliseconds.")
         .def("StartRecording", &ProfilerStreaming::Communicate::TCPRecorder::StartRecording, "Starts recording data from the TCP communicator.")
         .def("StopRecording", &ProfilerStreaming::Communicate::TCPRecorder::StopRecording, "Stops recording data from the TCP communicator.")
         .def("GetRecordedData", &ProfilerStreaming::Communicate::TCPRecorder::GetRecordedData, "Returns the recorded point cloud data along with their timestamps as a vector of PointCloudWithTimestamp objects.");
 
     nanobind::class_<ProfilerStreaming::Communicate::OPCUARecorder>(m, "OPCUARecorder")
-        .def(nanobind::init<std::shared_ptr<ProfilerStreaming::Communicate::OPCUACommunicator>, int>(), nanobind::arg("opcuaCommunicator"), nanobind::arg("recordingIntervalInMilliseconds"), "Initializes the OPCUARecorder with a shared OPCUACommunicator and a recording interval in milliseconds.")
+        .def(nanobind::init<ProfilerStreaming::Communicate::OPCUACommunicator&, int>(), nanobind::arg("opcuaCommunicator"), nanobind::arg("recordingIntervalInMilliseconds"), "Initializes the OPCUARecorder with a reference to an OPCUACommunicator and a recording interval in milliseconds.")
         .def("StartRecording", &ProfilerStreaming::Communicate::OPCUARecorder::StartRecording, "Starts recording data from the OPC UA communicator.")
         .def("StopRecording", &ProfilerStreaming::Communicate::OPCUARecorder::StopRecording, "Stops recording data from the OPC UA communicator.")
         .def("GetRecordedData", &ProfilerStreaming::Communicate::OPCUARecorder::GetRecordedData, "Returns the recorded point cloud data along with their timestamps as a vector of PointCloudWithTimestamp objects.");
