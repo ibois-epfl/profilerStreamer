@@ -108,6 +108,30 @@
                 "wireDisplay": "default",
                 "sourceCount": 0,
                 "typeHintID": "point"
+            },
+            {
+                "name": "i_reference_targets",
+                "nickname": "i_reference_targets",
+                "description": "The reference target surfaces in the machine coordinates that we will align the scanned point cloud to. The order of the reference targets should correspond to the order of the points selected from the point cloud.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "list",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "point"
+            },
+            {
+                "name": "i_flip_y_axis",
+                "nickname": "i_flip_y_axis",
+                "description": "Whether to flip the Y axis of the point cloud.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "bool"
             }
         ],
         "outputParameters": [

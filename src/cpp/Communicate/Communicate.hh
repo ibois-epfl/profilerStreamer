@@ -147,20 +147,15 @@ namespace ProfilerStreaming::Communicate
     public:
         using ChronoCallback = std::function<void(std::chrono::time_point<std::chrono::high_resolution_clock>)>;
 
-        static Chronometer* GetInstance() 
-        {
-            std::lock_guard<std::mutex> lock(instanceMutex);
-            if (instance == nullptr)
-            {
-                instance = new Chronometer();
+            // Meyers Singleton - thread-safe, auto-cleanup
+            static Chronometer& GetInstance() {
+                static Chronometer instance;
+                return instance;
             }
-            return instance;
-        }
 
-        std::chrono::time_point<std::chrono::high_resolution_clock> GetCurrentTime() const 
-        {
-            return std::chrono::high_resolution_clock::now();
-        }
+            std::chrono::time_point<std::chrono::high_resolution_clock> GetCurrentTime() const {
+                return std::chrono::high_resolution_clock::now();
+            }
 
     private:
         Chronometer() {}
