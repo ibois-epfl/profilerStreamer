@@ -70,7 +70,7 @@ namespace ProfilerStreaming::Communicate
             */
             ProfilerStreaming::Device::DeviceType deviceType;
 
-            void shutdown() 
+            void Shutdown() 
             {
                 if (deviceType == Device::DeviceType::OX) 
                 {
