@@ -71,18 +71,20 @@ namespace ProfilerStreaming::Communicate
 
             if( this->streamHandle->ProfileAvailable( ) )
             {
-                this->streamHandle->ReadProfile();
+                const Baumer::OXApi::UdpStreaming::ProfilePacket profilePacket = this->streamHandle->ReadProfile();
+                // GetProfile() only for Precision/XStart: it reports the sensor's latest profile, which may
+                // not be the packet we just dequeued if more than one was queued up.
                 const Baumer::OXApi::Types::Profile profileInfo = this->communicationHandle->GetProfile();
                 timestamp = chronometer.GetCurrentTime();
 
-                for (u_int i = 0; i < profileInfo.Length; ++i)
+                for (u_int i = 0; i < profilePacket.Length; ++i)
                 {
-                    if (profileInfo.X.at(i) == 0 && profileInfo.Z.at(i) == 0)
+                    if (profilePacket.X.at(i) == 0 && profilePacket.Z.at(i) == 0)
                         continue; // skip invalid points
-                    else if (profileInfo.X.at(i) && profileInfo.Z.at(i))
+                    else if (profilePacket.X.at(i) && profilePacket.Z.at(i))
                     {
-                        double y = (profileInfo.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
-                        double z = (profileInfo.Z.at(i)) / (double)profileInfo.Precision;
+                        double y = (profilePacket.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
+                        double z = (profilePacket.Z.at(i)) / (double)profileInfo.Precision;
                         points.emplace_back(0, y, z); // Assuming the global coord system has y in the profiler's x direction.
                     }
                 }
