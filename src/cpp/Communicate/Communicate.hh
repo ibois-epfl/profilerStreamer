@@ -262,6 +262,6 @@ namespace ProfilerStreaming::Communicate
             /*
             A reference to the OPCUACommunicator object used for recording data, as a private member.
             */
-            std::shared_ptr<OPCUACommunicator> opcuaCommunicator;
+            OPCUACommunicator& opcuaCommunicator;
     };
 }
