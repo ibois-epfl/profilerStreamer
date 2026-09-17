@@ -158,11 +158,13 @@ namespace ProfilerStreaming::Communicate
             }
 
     private:
-        Chronometer() {}
+            // Prevent copies
+            Chronometer(Chronometer const&) = delete;
+            void operator=(Chronometer const&) = delete;
 
-        static Chronometer* instance;
-        static std::mutex instanceMutex;
-    };
+        private:
+            Chronometer() = default;
+            ~Chronometer() = default;
 
     /*
     A recorder class that can be used to record data from a communicator. It uses a separate thread to continuously record data while a boolean switch is true.
