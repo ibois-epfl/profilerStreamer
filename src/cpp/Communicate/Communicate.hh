@@ -143,9 +143,10 @@ namespace ProfilerStreaming::Communicate
             UA_Client* client; // Placeholder for actual OPC UA client
     };
 
-    class Chronometer {
-    public:
-        using ChronoCallback = std::function<void(std::chrono::time_point<std::chrono::high_resolution_clock>)>;
+    class Chronometer 
+    {
+        public:
+            using ChronoCallback = std::function<void(std::chrono::time_point<std::chrono::high_resolution_clock>)>;
 
             // Meyers Singleton - thread-safe, auto-cleanup
             static Chronometer& GetInstance() {
@@ -157,7 +158,6 @@ namespace ProfilerStreaming::Communicate
                 return std::chrono::high_resolution_clock::now();
             }
 
-    private:
             // Prevent copies
             Chronometer(Chronometer const&) = delete;
             void operator=(Chronometer const&) = delete;
@@ -165,6 +165,7 @@ namespace ProfilerStreaming::Communicate
         private:
             Chronometer() = default;
             ~Chronometer() = default;
+    };
 
     /*
     A recorder class that can be used to record data from a communicator. It uses a separate thread to continuously record data while a boolean switch is true.
