@@ -70,6 +70,8 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/3rd_party/nanobind)
 # profilerStreamer
 file(GLOB_RECURSE SOURCES "src/cpp/*.cc" "src/cpp/*.hh" "src/cpp/ProfilerStreamer.hh")
 list(REMOVE_ITEM SOURCES "${PROJECT_SOURCE_DIR}/src/cpp/bindings.cc")
+list(REMOVE_ITEM SOURCES "${PROJECT_SOURCE_DIR}/src/cpp/test_mock_stream.cc")
+list(REMOVE_ITEM SOURCES "${PROJECT_SOURCE_DIR}/src/cpp/test_opcua_server_integration.cc")
 add_library(${SHARED_LIB_NAME} SHARED ${SOURCES})
 target_link_libraries(${SHARED_LIB_NAME} PRIVATE Open3D::Open3D Boost::system Boost::thread Boost::coroutine open62541::open62541 Threads::Threads)
 if(WIN32)
@@ -77,9 +79,20 @@ if(WIN32)
 endif()
 
 # executable
-add_executable(${TEST_EXECUTABLE_NAME} src/cpp/test_exec.cc)
+add_executable(${TEST_EXECUTABLE_NAME} src/cpp/test_mock_stream.cc)
 target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE ${SHARED_LIB_NAME})
-target_include_directories(${TEST_EXECUTABLE_NAME} 
+target_include_directories(${TEST_EXECUTABLE_NAME}
+    PRIVATE ${OXAPI_ROOT_DIR}/include/
+    PRIVATE ${OPEN3D_ROOT_DIR}/include/
+    PRIVATE ${OPEN3D_ROOT_DIR}/include/open3d/3rdparty/
+    PRIVATE ${PROJECT_SOURCE_DIR}/src/cpp/
+)
+
+# OPC-UA server integration test executable
+set (OPCUA_SERVER_TEST_EXECUTABLE_NAME "profilerStreamerOpcuaServerTest")
+add_executable(${OPCUA_SERVER_TEST_EXECUTABLE_NAME} src/cpp/test_opcua_server_integration.cc)
+target_link_libraries(${OPCUA_SERVER_TEST_EXECUTABLE_NAME} PRIVATE ${SHARED_LIB_NAME})
+target_include_directories(${OPCUA_SERVER_TEST_EXECUTABLE_NAME}
     PRIVATE ${OXAPI_ROOT_DIR}/include/
     PRIVATE ${OPEN3D_ROOT_DIR}/include/
     PRIVATE ${OPEN3D_ROOT_DIR}/include/open3d/3rdparty/
@@ -89,13 +102,15 @@ target_include_directories(${TEST_EXECUTABLE_NAME}
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_link_libraries(${SHARED_LIB_NAME} PRIVATE OXApi_debug-vc141-x64)
     target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE ${SHARED_LIB_NAME} Boost::system Boost::thread Boost::coroutine OXApi_debug-vc141-x64 open62541::open62541 Threads::Threads Open3D::Open3D)
+    target_link_libraries(${OPCUA_SERVER_TEST_EXECUTABLE_NAME} PRIVATE ${SHARED_LIB_NAME} Boost::system Boost::thread Boost::coroutine OXApi_debug-vc141-x64 open62541::open62541 Threads::Threads Open3D::Open3D)
     file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi_debug-vc141-x64.dll" DESTINATION "${CMAKE_BINARY_DIR}")
     file(COPY "${OPEN3D_ROOT_DIR}/bin/Open3D.dll" DESTINATION "${CMAKE_BINARY_DIR}")
     file(COPY "${OPEN3D_ROOT_DIR}/bin/tbb12_debug.dll" DESTINATION "${CMAKE_BINARY_DIR}")
-    file(COPY "${CMAKE_BINARY_DIR}/Debug/ProfilerStreamer.dll" DESTINATION "${PROJECT_SOURCE_DIR}/src/python_package/profiler_streamer/bindings/")
+    #file(COPY "${CMAKE_BINARY_DIR}/Debug/ProfilerStreamer.dll" DESTINATION "${PROJECT_SOURCE_DIR}/src/python_package/profiler_streamer/bindings/")
 else()
     target_link_libraries(${SHARED_LIB_NAME} PRIVATE OXApi-vc141-x64)
     target_link_libraries(${TEST_EXECUTABLE_NAME} PRIVATE Boost::system Boost::thread Boost::coroutine OXApi-vc141-x64 open62541::open62541 Threads::Threads Open3D::Open3D)
+    target_link_libraries(${OPCUA_SERVER_TEST_EXECUTABLE_NAME} PRIVATE Boost::system Boost::thread Boost::coroutine OXApi-vc141-x64 open62541::open62541 Threads::Threads Open3D::Open3D)
     file(COPY "${OXAPI_ROOT_DIR}/libs/OXApi-vc141-x64.dll" DESTINATION "${CMAKE_BINARY_DIR}")
     file(COPY "${OPEN3D_ROOT_DIR}/bin/Open3D.dll" DESTINATION "${CMAKE_BINARY_DIR}")
 endif()
