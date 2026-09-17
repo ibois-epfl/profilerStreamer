@@ -198,6 +198,11 @@ namespace ProfilerStreaming::Communicate
 
     void TCPRecorder::StartRecording()
     {
+        if (this->recordingThread.joinable())
+        {
+            throw std::runtime_error("TCPRecorder: cannot start recording while already recording. Call StopRecording() first.");
+        }
+
         this->recordingSwitch = true;
 
         this->recordingThread = std::thread([this]()
@@ -251,6 +256,11 @@ namespace ProfilerStreaming::Communicate
 
     void OPCUARecorder::StartRecording()
     {
+        if (this->recordingThread.joinable())
+        {
+            throw std::runtime_error("OPCUARecorder: cannot start recording while already recording. Call StopRecording() first.");
+        }
+
         this->recordingSwitch = true;
         this->recordingThread = std::thread([this]()
         {
