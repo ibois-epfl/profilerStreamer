@@ -1,0 +1,23 @@
+name: "cpp-build"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+      - name: Configure CMake
+        run: cmake -S . -B build
+      - name: Build
+        run: cmake --build build --config Debug
+      - name: Run mock test
+        run: build\Debug\profilerStreamerTest.exe
+      - name: Run OPC UA Server Tests
+        run: build\Debug\profilerStreamerOpcuaServerTest.exe
