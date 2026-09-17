@@ -119,7 +119,7 @@
                 "scriptParamAccess": "list",
                 "wireDisplay": "default",
                 "sourceCount": 0,
-                "typeHintID": "point"
+                "typeHintID": "brep"
             },
             {
                 "name": "i_flip_y_axis",
