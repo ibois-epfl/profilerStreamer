@@ -44,15 +44,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
-            if (this->communicationHandle)
-                this->communicationHandle->Disconnect();
-
-            if (this->streamHandle)
-            {
-                this->streamHandle->Stop();
-                this->streamHandle->Close();
-            }
-            this->communicationHandle = nullptr;
+            this->Shutdown();
         }
         return true; // Placeholder return value
     }
@@ -208,7 +200,7 @@ namespace ProfilerStreaming::Communicate
             {
                 try
                 {
-                    auto profile = this->tcpCommunicator->GetDataWithTimestamp();
+                    auto profile = this->tcpCommunicator.GetDataWithTimestamp();
                     std::lock_guard<std::mutex> lock(this->dataMutex);
                     this->recordedData.push_back(profile);
                 }
@@ -260,7 +252,7 @@ namespace ProfilerStreaming::Communicate
             {
                 try
                 {
-                    auto data = this->opcuaCommunicator->GetDataWithTimestamp();
+                    auto data = this->opcuaCommunicator.GetDataWithTimestamp();
                     std::lock_guard<std::mutex> lock(this->dataMutex);
                     this->recordedData.push_back(data);
                 }
