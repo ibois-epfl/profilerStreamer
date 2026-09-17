@@ -183,6 +183,7 @@ namespace ProfilerStreaming::Communicate
             */
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> GetRecordedData()
             {
+                std::lock_guard<std::mutex> lock(dataMutex);
                 return this->recordedData;
             };
 
