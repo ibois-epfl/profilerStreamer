@@ -73,7 +73,7 @@ namespace ProfilerStreaming::Communicate
             }
             std::vector<Eigen::Vector3d> points;
             auto timestamp = std::chrono::high_resolution_clock::now(); // Default timestamp in case no profile is available
-            Chronometer* chronometer = Chronometer::GetInstance();
+            Chronometer& chronometer = Chronometer::GetInstance();
 
             if( this->streamHandle->ProfileAvailable( ) )
             {
