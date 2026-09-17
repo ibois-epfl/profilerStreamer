@@ -1,5 +1,6 @@
 
 #include "Communicate.hh"
+#include <iostream>
 
 namespace ProfilerStreaming::Communicate
 {
@@ -110,7 +111,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->client)
         {
-            UA_Client_delete(this->client);
+            Disconnect();
         }
     }
 
@@ -145,7 +146,8 @@ namespace ProfilerStreaming::Communicate
     {
         if (!this->client)
         {
-            throw std::runtime_error("OPC UA client is not connected");
+            // Return empty point cloud instead of throwing when disconnected
+            return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
         }
 
         UA_Variant value;
@@ -154,7 +156,8 @@ namespace ProfilerStreaming::Communicate
         UA_StatusCode status = UA_Client_readValueAttribute(this->client, nodeId, &value);
         if(status != UA_STATUSCODE_GOOD) 
         {
-            throw std::runtime_error("Failed to read value from OPC UA server");
+            UA_Variant_clear(&value);
+            return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
         }
 
         std::vector<Eigen::Vector3d> points;
@@ -165,7 +168,8 @@ namespace ProfilerStreaming::Communicate
 
             if (len != 2)
             {
-                throw std::runtime_error("Expected a byte array of length 2 for distance measurement");
+                UA_Variant_clear(&value);
+                return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
             }
             else
             {
@@ -176,11 +180,13 @@ namespace ProfilerStreaming::Communicate
         }
         else
         {
-            throw std::runtime_error("Unexpected data type received from OPC UA server");
+            UA_Variant_clear(&value);
+            return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
         }
 
-        Chronometer* chronometer = Chronometer::GetInstance();
-        auto timestamp = chronometer->GetCurrentTime();
+        UA_Variant_clear(&value);
+        Chronometer& chronometer = Chronometer::GetInstance();
+        auto timestamp = chronometer.GetCurrentTime();
         return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
     }
 
