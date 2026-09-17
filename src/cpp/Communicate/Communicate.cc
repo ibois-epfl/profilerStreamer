@@ -63,7 +63,8 @@ namespace ProfilerStreaming::Communicate
         {
             if (!this->communicationHandle)
             {
-                throw std::runtime_error("Communication handle is not initialized");
+                // Return empty point cloud instead of throwing when disconnected
+                return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
             }
             if (!this->streamHandle)
             {
@@ -77,15 +78,15 @@ namespace ProfilerStreaming::Communicate
 
             if( this->streamHandle->ProfileAvailable( ) )
             {
-                Baumer::OXApi::UdpStreaming::ProfilePacket profile = this->streamHandle->ReadProfile();
+                this->streamHandle->ReadProfile();
                 const Baumer::OXApi::Types::Profile profileInfo = this->communicationHandle->GetProfile();
-                auto timestamp = chronometer->GetCurrentTime();
-                
-                for (u_int i = 0; i < profile.Length; ++i)
+                timestamp = chronometer.GetCurrentTime();
+
+                for (u_int i = 0; i < profileInfo.Length; ++i)
                 {
-                    if (profile.X.at(i) == 0 && profile.Z.at(i) == 0)
+                    if (profileInfo.X.at(i) == 0 && profileInfo.Z.at(i) == 0)
                         continue; // skip invalid points
-                    else if (profile.X.at(i) && profile.Z.at(i))
+                    else if (profileInfo.X.at(i) && profileInfo.Z.at(i))
                     {
                         double y = (profileInfo.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
                         double z = (profileInfo.Z.at(i)) / (double)profileInfo.Precision;
