@@ -21,6 +21,15 @@ jobs:
         run: build\Debug\profilerStreamerTest.exe
       - name: List build output (diagnostic)
         run: Get-ChildItem build\Debug\
+      - name: Compare dependents of both test exes (diagnostic)
+        run: |
+          $dumpbin = Get-ChildItem -Path "C:\Program Files\Microsoft Visual Studio" -Recurse -Filter dumpbin.exe -ErrorAction SilentlyContinue |
+            Where-Object { $_.FullName -like "*Hostx64\x64*" } | Select-Object -First 1 -ExpandProperty FullName
+          Write-Output "Using dumpbin: $dumpbin"
+          Write-Output "=== profilerStreamerTest.exe dependents ==="
+          & $dumpbin /dependents build\Debug\profilerStreamerTest.exe | Select-String "\.dll|\.DLL"
+          Write-Output "=== profilerStreamerOpcuaServerTest.exe dependents ==="
+          & $dumpbin /dependents build\Debug\profilerStreamerOpcuaServerTest.exe | Select-String "\.dll|\.DLL"
       - name: Run OPC UA Server Tests
         run: |
           $PSNativeCommandUseErrorActionPreference = $false
