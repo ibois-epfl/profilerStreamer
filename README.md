@@ -2,14 +2,12 @@
 ![build and basic CI test](https://github.com/ibois-epfl/profilerStreamer/actions/workflows/test_connections.yml/badge.svg)
 
 <p align="center">
-<img src="./assets/2026_02_09_profiler_usage.gif" width="40%">
-<img src="./assets/2026_02_11_test_profileur.png" width="45%">
+<img src="./assets/2026_02_09_profiler_usage.gif" width="32%">
+<img src="./assets/2026_02_11_test_profileur.png" width="35.3%">
+<img src="./assets/2026_02_17_laser_profiler_CNC.gif" width="20%">
 </p>
 
 profilerStreamer is a small project to combine 2D laser profiler data from Baumer with 1D sick distance sensor to recreate 3D point cloud of timber pieces in a CNC.
-
->[!Note]
-> This repository aims at creating a small grasshopper plugin for Rhino8. It is currently only a c++ library with binding and is still work in progress. 
 
 The hardware used in this instance is:
 
@@ -44,8 +42,6 @@ To run the code successfully, you must know:
 
 - The NamespaceIndex and Identifier of the port 4 of the IO-Link device in the OPC-UA server of the IO-Link master.
 
-    > [!NOTE]
-    > [TO BE FIXED] For now hard-coded in the c++ code, but as parameter in the python binding:
     ```cpp
     ProfilerStreaming::Communicate::OPCUACommunicator opcuaCommunicator(OPCUAHost,
                                                                         ProfilerStreaming::Device::DeviceType::IO_LINK, 
