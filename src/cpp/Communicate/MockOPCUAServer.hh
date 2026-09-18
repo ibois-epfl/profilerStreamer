@@ -4,6 +4,7 @@
 #pragma once
 
 // STL headers
+#include <atomic>
 #include <cmath>
 #include <stdexcept>
 #include <string>
@@ -68,13 +69,21 @@ namespace ProfilerStreaming::Communicate
             {
                 throw std::runtime_error("MockOPCUAServer: already running");
             }
-            running = true;
-            serverThread = std::thread([this]() { UA_Server_run(server, &running); });
+            running.store(true, std::memory_order_release);
+            serverThread = std::thread([this]() 
+            {
+                UA_Server_run_startup(server);
+                while (running.load(std::memory_order_acquire))
+                {
+                    UA_Server_run_iterate(server, true);
+                }
+                UA_Server_run_shutdown(server);
+            });
         }
 
         void Stop()
         {
-            running = false;
+            running.store(false, std::memory_order_release);
             if (serverThread.joinable())
             {
                 serverThread.join();
@@ -140,7 +149,7 @@ namespace ProfilerStreaming::Communicate
         UA_Server* server = nullptr;
         UA_NodeId nodeId;
         std::thread serverThread;
-        UA_Boolean running = false;
+        std::atomic<bool> running{false};
         int distanceValueMm = 1000;
         int tick = 0;
     };
