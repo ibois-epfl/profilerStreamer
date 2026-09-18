@@ -109,6 +109,8 @@ add_custom_command(TARGET ${SHARED_LIB_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${OXAPI_ROOT_DIR}/libs/${OXAPI_DLL_NAME}" "$<TARGET_FILE_DIR:${SHARED_LIB_NAME}>"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${OPEN3D_ROOT_DIR}/bin/Open3D.dll" "$<TARGET_FILE_DIR:${SHARED_LIB_NAME}>"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "${OPEN3D_ROOT_DIR}/bin/tbb12_debug.dll" "$<TARGET_FILE_DIR:${SHARED_LIB_NAME}>"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${SHARED_LIB_NAME}>" "${PROJECT_SOURCE_DIR}/src/python_package/profiler_streamer/bindings/"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different "${OXAPI_ROOT_DIR}/libs/${OXAPI_DLL_NAME}" "${PROJECT_SOURCE_DIR}/src/python_package/profiler_streamer/bindings/"
 )
 
 nanobind_add_module(${BINDINGS_MODULE_NAME} ${PROJECT_SOURCE_DIR}/src/cpp/bindings.cc)
