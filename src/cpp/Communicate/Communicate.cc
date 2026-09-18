@@ -263,8 +263,11 @@ namespace ProfilerStreaming::Communicate
                 try
                 {
                     auto data = this->opcuaCommunicator.GetDataWithTimestamp();
-                    std::lock_guard<std::mutex> lock(this->dataMutex);
-                    this->recordedData.push_back(data);
+                    if (data.GetNumPoints() > 0)
+                    {
+                        std::lock_guard<std::mutex> lock(this->dataMutex);
+                        this->recordedData.push_back(data);
+                    }
                 }
                 catch (const std::exception& e)
                 {

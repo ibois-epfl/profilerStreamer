@@ -65,20 +65,26 @@ int main()
     std::cout << "\nRecorded " << tcpProfiles.size() << " TCP profiles" << std::endl;
     std::cout << "Recorded " << opuaData.size() << " OPC-UA data points" << std::endl;
     
-    // Verify timestamps are increasing
-    bool timestampsIncreasing = true;
+    // Verify timestamps never move backwards.
+    bool timestampsNondecreasing = true;
     for (size_t i = 1; i < tcpProfiles.size(); ++i) {
-        if (tcpProfiles[i].GetTimeStampAsInt() <= tcpProfiles[i-1].GetTimeStampAsInt()) {
-            timestampsIncreasing = false;
+        if (tcpProfiles[i].GetTimestamp() < tcpProfiles[i - 1].GetTimestamp()) {
+            timestampsNondecreasing = false;
             break;
         }
     }
-    std::cout << "TCP timestamps are increasing: " << (timestampsIncreasing ? "YES" : "NO") << std::endl;
+    std::cout << "TCP timestamps are nondecreasing: "
+              << (timestampsNondecreasing ? "YES" : "NO") << std::endl;
 
-    // Disconnect
     mockTcpComm.Disconnect();
     mockOpuaComm.Disconnect();
 
-    std::cout << "\nMock stream test completed successfully!" << std::endl;
-    return 0;
+    const bool checksPassed = tcpConnected && opuaConnected &&
+        tcpData1.GetNumPoints() == 100 && tcpData2.GetNumPoints() == 100 &&
+        opuaData1.GetNumPoints() == 1 && opuaData2.GetNumPoints() == 1 &&
+        tcpProfiles.size() == numIterations && opuaData.size() == numIterations &&
+        timestampsNondecreasing;
+    std::cout << "\nMock stream test "
+              << (checksPassed ? "completed successfully!" : "FAILED!") << std::endl;
+    return checksPassed ? 0 : 1;
 }
