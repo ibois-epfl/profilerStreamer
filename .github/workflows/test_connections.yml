@@ -1,4 +1,4 @@
-name: "cpp-build"
+name: "basic_build_and_test_runs"
 
 on:
   push:

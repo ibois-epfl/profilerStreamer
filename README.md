@@ -1,4 +1,5 @@
 # profilerStreamer
+![build and basic CI test](https://github.com/ibois-epfl/profilerStreamer/actions/workflows/test_connections.yml/badge.svg)
 
 <p align="center">
 <img src="./assets/2026_02_09_profiler_usage.gif" width="40%">
