@@ -19,5 +19,11 @@ jobs:
         run: cmake --build build --config Debug
       - name: Run mock test
         run: build\Debug\profilerStreamerTest.exe
+      - name: List build output (diagnostic)
+        run: Get-ChildItem build\Debug\
       - name: Run OPC UA Server Tests
-        run: build\Debug\profilerStreamerOpcuaServerTest.exe
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $false
+          build\Debug\profilerStreamerOpcuaServerTest.exe
+          Write-Output "Exit code: $LASTEXITCODE"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
