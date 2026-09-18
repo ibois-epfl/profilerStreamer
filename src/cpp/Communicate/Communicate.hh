@@ -70,6 +70,11 @@ namespace ProfilerStreaming::Communicate
             */
             ProfilerStreaming::Device::DeviceType deviceType;
 
+            /*
+            The host address for the device, stored to allow reconnection.
+            */
+            std::string host;
+
             void Shutdown() 
             {
                 if (deviceType == Device::DeviceType::OX) 

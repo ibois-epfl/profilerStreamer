@@ -4,7 +4,7 @@
 
 namespace ProfilerStreaming::Communicate
 {
-    TCPCommunicator::TCPCommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType) : deviceType(deviceType)
+    TCPCommunicator::TCPCommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType) : deviceType(deviceType), host(host)
     {
         if (deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
@@ -24,10 +24,15 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
-            if (this->communicationHandle)
-                this->communicationHandle->Connect();
+            // Recreate communication handle if it was cleared (e.g., after Disconnect)
+            if (!this->communicationHandle)
+            {
+                this->communicationHandle = Baumer::OXApi::Ox::Create(this->host);
+            }
             
-                if (!this->streamHandle)
+            this->communicationHandle->Connect();
+            
+            if (!this->streamHandle)
             {
                 this->streamHandle = this->communicationHandle->CreateStream();
                 this->streamHandle->Start();
