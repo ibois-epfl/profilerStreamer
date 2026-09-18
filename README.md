@@ -34,8 +34,6 @@ To run the code successfully, you must know:
     - the Baumer profiler
     - the IO-Link master
 
-    > [!NOTE]
-    > [TO BE FIXED] For now hard-coded in the c++ code, but as parameter in the python binding:
     ```cpp
     std::string OPCUAHost = "opc.tcp://192.168.0.64:4840";
     ```
