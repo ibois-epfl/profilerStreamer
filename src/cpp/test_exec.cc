@@ -1,7 +1,7 @@
 #include "ProfilerStreamer.hh"
 
 
-int main(int argc, char* argv[])
+int other_main(int argc, char* argv[])
 {
     // From BaumerSDK/Cpp/LibOxApi_V2_0_2/LibOxApi_V2_0_2/example/src/oxapiexamples.cpp
     // create an instance of a Ox object

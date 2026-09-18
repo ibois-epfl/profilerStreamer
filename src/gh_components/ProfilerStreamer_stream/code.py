@@ -5,6 +5,7 @@ import System
 import typing
 import time
 import gc
+import os
 
 
 import Rhino
@@ -22,6 +23,8 @@ class ProfilerStreamerStream(component):
             i_activate_component: bool,
             i_profiler_ip_address: str,
             i_opcua_address: str,
+            i_opcua_namespace: int,
+            i_opcua_id: int,
             i_recording_duration: float,
             i_trajectories: System.Collections.Generic.List[Rhino.Geometry.Line],
             i_slicing_interval: float,
@@ -29,25 +32,31 @@ class ProfilerStreamerStream(component):
         
         if not i_activate_component:
             return []
-        
+
         if i_slicing_interval is None:
             i_slicing_interval = 2.0
+        if i_opcua_namespace is None:
+            i_opcua_namespace = 6
+        if i_opcua_id is None:
+            i_opcua_id = 229916
 
         tcp_communicator = None
         try:
             tcp_communicator = psb.TCPCommunicator(i_profiler_ip_address, psb.DeviceType.OX)
             tcp_communicator.Connect()
-            
+
         except Exception as e:
             if tcp_communicator is not None:
                 tcp_communicator.Disconnect()
                 del tcp_communicator
                 gc.collect()
             print(f"Failed to connect a second time to TCP device at {i_profiler_ip_address}: {e}")
+            return []
+
 
         opcua_communicator = None
         try:
-            opcua_communicator = psb.OPCUACommunicator(i_opcua_address, psb.DeviceType.IO_LINK, (6, 229916))
+            opcua_communicator = psb.OPCUACommunicator(i_opcua_address, psb.DeviceType.IO_LINK, (i_opcua_namespace, i_opcua_id))
             opcua_communicator.Connect()
         except Exception as e:
             if opcua_communicator is not None:
@@ -55,7 +64,8 @@ class ProfilerStreamerStream(component):
                 del opcua_communicator
             gc.collect()
             print(f"Failed to connect to OPC UA device at {i_opcua_address}: {e}")
-        
+            return []
+
         tcp_recorder = psb.TCPRecorder(tcp_communicator, 5)
         opcua_recorder = psb.OPCUARecorder(opcua_communicator, 5)
         tcp_recorder.StartRecording()
@@ -67,15 +77,22 @@ class ProfilerStreamerStream(component):
         time.sleep(0.5)
         profiles_over_time = tcp_recorder.GetRecordedData()
         rangefinder_data_over_time = opcua_recorder.GetRecordedData()
+        if not profiles_over_time or not rangefinder_data_over_time:
+            if tcp_communicator is not None: 
+                tcp_communicator.Disconnect()
+            if opcua_communicator is not None:
+                opcua_communicator.Disconnect()
+            print("ERROR: No data recorded from devices...")
+            return []
         print(f"First profile timestamp: {profiles_over_time[0].GetTimeStampAsInt()}, first rangefinder timestamp: {rangefinder_data_over_time[0].GetTimeStampAsInt()}")
         slicer = psb.DataSlicer(profiles_over_time, rangefinder_data_over_time)
         mini, maxi = slicer.Slice(int(i_slicing_interval) * 1000)
         if len(slicer.GetRangeFinderDistancesSortedIntoSegments()) == 0 or len(slicer.GetProfilesSortedIntoSegments()) == 0:
             print("No valid segments found.")
-            return
+            return []
         if len(slicer.GetRangeFinderDistancesSortedIntoSegments()[0]) == 0 or len(slicer.GetProfilesSortedIntoSegments()[0]) == 0:
             print("No valid segments found.")
-            return
+            return []
         first_sorted_rangefinder_data_timestamp = slicer.GetRangeFinderDistancesSortedIntoSegments()[0][0].GetTimeStampAsInt()
         first_sorted_profile_timestamp = slicer.GetProfilesSortedIntoSegments()[0][0].GetTimeStampAsInt()
         pc_as_list = slicer.ComputeRegularizedProfilesAsArray()
@@ -85,23 +102,28 @@ class ProfilerStreamerStream(component):
 
         n_seg = None
         results = []
-        
+
         for i, segment in enumerate(pc_as_list):
             if len(i_trajectories) > 1:
-                y_calib = i_trajectories[i].From.Y
-                z_calib = i_trajectories[i].From.Z
+                traj_index = min(i, len(i_trajectories) - 1)
+                y_calib = i_trajectories[traj_index].From.Y
+                z_calib = i_trajectories[traj_index].From.Z
             else:
                 y_calib = i_trajectories[0].From.Y
                 z_calib = i_trajectories[0].From.Z
             rh_pc = Rhino.Geometry.PointCloud()
             rh_pts = []
+            if i_calibration_data[3]:
+                flip_factor = -1
+            else:
+                flip_factor = 1
             for point in segment:
-                rh_pt = Rhino.Geometry.Point3d(point[0], point[1], point[2])
+                rh_pt = Rhino.Geometry.Point3d(point[0], flip_factor * point[1], point[2])
                 rh_pts.append(rh_pt)
             rh_pc.AddRange(rh_pts)
-            rh_transform = i_calibration_data[0]
+            rh_transform = Rhino.Geometry.Transform(i_calibration_data[0])
             rh_transform.M13 += y_calib - i_calibration_data[1]
-            rh_transform.M23 += z_calib - i_calibration_data[2]
+            # rh_transform.M23 += z_calib - i_calibration_data[2]
             rh_pc.Transform(rh_transform)
             results.append(rh_pc)
         return [results]

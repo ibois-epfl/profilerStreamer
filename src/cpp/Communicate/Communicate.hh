@@ -71,6 +71,26 @@ namespace ProfilerStreaming::Communicate
             ProfilerStreaming::Device::DeviceType deviceType;
 
             /*
+            The host address for the device, stored to allow reconnection.
+            */
+            std::string host;
+
+            void Shutdown() 
+            {
+                if (deviceType == Device::DeviceType::OX) 
+                {
+                    if (communicationHandle) communicationHandle->Disconnect();
+                    if (streamHandle) 
+                    {
+                        streamHandle->Stop();
+                        streamHandle->Close();
+                    }
+                    streamHandle = nullptr;
+                    communicationHandle = nullptr;
+                }
+            }
+
+            /*
             The communication handle for the device, as a private member. This is used to manage the connection and communication with the device.
             */
             std::shared_ptr<Baumer::OXApi::Ox> communicationHandle = nullptr;
@@ -125,33 +145,31 @@ namespace ProfilerStreaming::Communicate
             /*
             The OPC UA client, as a private member. This is used to manage the connection and communication with the OPC UA server.
             */
-            UA_Client* client; // Placeholder for actual OPC UA client
+            UA_Client* client = nullptr; // Placeholder for actual OPC UA client
     };
 
-    class Chronometer {
-    public:
-        using ChronoCallback = std::function<void(std::chrono::time_point<std::chrono::high_resolution_clock>)>;
+    class Chronometer 
+    {
+        public:
+            using ChronoCallback = std::function<void(std::chrono::time_point<std::chrono::high_resolution_clock>)>;
 
-        static Chronometer* GetInstance() 
-        {
-            std::lock_guard<std::mutex> lock(instanceMutex);
-            if (instance == nullptr)
-            {
-                instance = new Chronometer();
+            // Meyers Singleton - thread-safe, auto-cleanup
+            static Chronometer& GetInstance() {
+                static Chronometer instance;
+                return instance;
             }
-            return instance;
-        }
 
-        std::chrono::time_point<std::chrono::high_resolution_clock> GetCurrentTime() const 
-        {
-            return std::chrono::high_resolution_clock::now();
-        }
+            std::chrono::time_point<std::chrono::high_resolution_clock> GetCurrentTime() const {
+                return std::chrono::high_resolution_clock::now();
+            }
 
-    private:
-        Chronometer() {}
+            // Prevent copies
+            Chronometer(Chronometer const&) = delete;
+            void operator=(Chronometer const&) = delete;
 
-        static Chronometer* instance;
-        static std::mutex instanceMutex;
+        private:
+            Chronometer() = default;
+            ~Chronometer() = default;
     };
 
     /*
@@ -173,6 +191,7 @@ namespace ProfilerStreaming::Communicate
             */
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> GetRecordedData()
             {
+                std::lock_guard<std::mutex> lock(dataMutex);
                 return this->recordedData;
             };
 
@@ -193,6 +212,11 @@ namespace ProfilerStreaming::Communicate
             std::thread recordingThread;
 
             std::atomic<bool> recordingSwitch;
+
+            /*
+            Mutex to protect access to recordedData from multiple threads.
+            */
+            std::mutex dataMutex;
     };
 
     class TCPRecorder : public Recorder

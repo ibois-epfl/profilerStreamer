@@ -36,8 +36,13 @@ namespace ProfilerStreaming::PostProcess
         // Sort the profiles into the detected segments
         for (int i = 0; i < this->unsortedRangeFinderDistances.size() - nIntervals; ++i)
         {
-            double speed = (this->unsortedRangeFinderDistances.at(i+nIntervals).GetPoints().at(0).x() 
-                                                  - this->unsortedRangeFinderDistances.at(i).GetPoints().at(0).x()) 
+            const auto& pointsAhead = this->unsortedRangeFinderDistances.at(i+nIntervals).GetPoints();
+            const auto& pointsHere = this->unsortedRangeFinderDistances.at(i).GetPoints();
+            if (pointsAhead.empty() || pointsHere.empty())
+            {
+                continue; // skip readings where no valid rangefinder point was captured
+            }
+            double speed = (pointsAhead.at(0).x() - pointsHere.at(0).x())
                                         / std::chrono::duration_cast<std::chrono::milliseconds>(this->unsortedRangeFinderDistances.at(i+nIntervals).GetTimestamp() 
                                                                                               - this->unsortedRangeFinderDistances.at(i).GetTimestamp()).count();
             if (std::abs(speed) < 0.005 && rangeFinderDistanceSegments.size() == 0) // IE if in measurmentIntervalInMilliseconds ms the speed was under 5mm/second, we assume no movement.
@@ -108,10 +113,12 @@ namespace ProfilerStreaming::PostProcess
             std::vector<ProfilerStreaming::SpatialData::PointCloudWithTimestamp> profileVector = this->profilesSortedIntoSegments.at(i);
             // TODO: expose this variable.
             int windowingSize = 20;
-            for (int j = 0; j < profileVector.size() - 1; ++j)
+            int profileCount = static_cast<int>(profileVector.size());
+            int segmentSize = static_cast<int>(rangeFinderDistancesSortedIntoSegments.at(i).size());
+            for (int j = 0; j < profileCount - 1; ++j)
             {
                 auto tProfile = profileVector.at(j).GetTimestamp();
-                for (int k = windowingSize; k < rangeFinderDistancesSortedIntoSegments.at(i).size() - windowingSize; ++k)
+                for (int k = windowingSize; k < segmentSize - windowingSize; ++k)
                 {
                     if (rangeFinderDistancesSortedIntoSegments.at(i).at(k).GetTimestamp() < tProfile) // IE if the rangefinder data is from before the profile data, and we are actually moving, we assume the profile data is valid and should be added to the point cloud.
                     {

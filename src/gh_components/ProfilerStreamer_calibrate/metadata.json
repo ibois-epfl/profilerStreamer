@@ -50,6 +50,30 @@
                 "typeHintID": "str"
             },
             {
+                "name": "i_opcua_namespace",
+                "nickname": "i_opcua_namespace",
+                "description": "The namespace index of the OPC UA device.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "int"
+            },
+            {
+                "name": "i_opcua_id",
+                "nickname": "i_opcua_id",
+                "description": "The ID of the OPC UA device.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "int"
+            },
+            {
                 "name": "i_recording_duration",
                 "nickname": "i_recording_duration",
                 "description": "The duration for recording, in seconds.",
@@ -108,6 +132,30 @@
                 "wireDisplay": "default",
                 "sourceCount": 0,
                 "typeHintID": "point"
+            },
+            {
+                "name": "i_reference_targets",
+                "nickname": "i_reference_targets",
+                "description": "The reference target surfaces in the machine coordinates that we will align the scanned point cloud to. The order of the reference targets should correspond to the order of the points selected from the point cloud.",
+                "optional": false,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "list",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "brep"
+            },
+            {
+                "name": "i_flip_y_axis",
+                "nickname": "i_flip_y_axis",
+                "description": "Whether to flip the Y axis of the point cloud.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "bool"
             }
         ],
         "outputParameters": [

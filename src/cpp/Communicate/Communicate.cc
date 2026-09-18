@@ -1,9 +1,10 @@
 
 #include "Communicate.hh"
+#include <iostream>
 
 namespace ProfilerStreaming::Communicate
 {
-    TCPCommunicator::TCPCommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType) : deviceType(deviceType)
+    TCPCommunicator::TCPCommunicator(const std::string& host, ProfilerStreaming::Device::DeviceType deviceType) : deviceType(deviceType), host(host)
     {
         if (deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
@@ -15,14 +16,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
-            if (this->communicationHandle)
-                this->communicationHandle->Disconnect();
-            
-            if (this->streamHandle)
-                this->streamHandle->Stop();
-                this->streamHandle->Close();
-            this->streamHandle = nullptr;
-            this->communicationHandle = nullptr;
+            this->Shutdown();
         }
     }
 
@@ -30,10 +24,15 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
-            if (this->communicationHandle)
-                this->communicationHandle->Connect();
+            // Recreate communication handle if it was cleared (e.g., after Disconnect)
+            if (!this->communicationHandle)
+            {
+                this->communicationHandle = Baumer::OXApi::Ox::Create(this->host);
+            }
             
-                if (!this->streamHandle)
+            this->communicationHandle->Connect();
+            
+            if (!this->streamHandle)
             {
                 this->streamHandle = this->communicationHandle->CreateStream();
                 this->streamHandle->Start();
@@ -51,15 +50,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->deviceType == ProfilerStreaming::Device::DeviceType::OX)
         {
-            if (this->communicationHandle)
-                this->communicationHandle->Disconnect();
-
-            if (this->streamHandle)
-            {
-                this->streamHandle->Stop();
-                this->streamHandle->Close();
-            }
-            this->communicationHandle = nullptr;
+            this->Shutdown();
         }
         return true; // Placeholder return value
     }
@@ -70,32 +61,31 @@ namespace ProfilerStreaming::Communicate
         {
             if (!this->communicationHandle)
             {
-                throw std::runtime_error("Communication handle is not initialized");
+                return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
             }
             if (!this->streamHandle)
             {
                 this->streamHandle = this->communicationHandle->CreateStream();
-                // this->streamHandle->SetReceiveBufferSize( 2 * 1024 * 1024 );
                 this->streamHandle->Start();
             }
             std::vector<Eigen::Vector3d> points;
             auto timestamp = std::chrono::high_resolution_clock::now(); // Default timestamp in case no profile is available
-            Chronometer* chronometer = Chronometer::GetInstance();
+            Chronometer& chronometer = Chronometer::GetInstance();
 
             if( this->streamHandle->ProfileAvailable( ) )
             {
-                Baumer::OXApi::UdpStreaming::ProfilePacket profile = this->streamHandle->ReadProfile();
+                const Baumer::OXApi::UdpStreaming::ProfilePacket profilePacket = this->streamHandle->ReadProfile();
                 const Baumer::OXApi::Types::Profile profileInfo = this->communicationHandle->GetProfile();
-                auto timestamp = chronometer->GetCurrentTime();
-                
-                for (u_int i = 0; i < profile.Length; ++i)
+                timestamp = chronometer.GetCurrentTime();
+
+                for (u_int i = 0; i < profilePacket.Length; ++i)
                 {
-                    if (profile.X.at(i) == 0 && profile.Z.at(i) == 0)
-                        continue; // skip invalid points
-                    else if (profile.X.at(i) && profile.Z.at(i))
+                    if (profilePacket.X.at(i) == 0 && profilePacket.Z.at(i) == 0)
+                        continue;
+                    else if (profilePacket.X.at(i) && profilePacket.Z.at(i))
                     {
-                        double y = (profileInfo.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
-                        double z = (profileInfo.Z.at(i)) / (double)profileInfo.Precision;
+                        double y = (profilePacket.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
+                        double z = (profilePacket.Z.at(i)) / (double)profileInfo.Precision;
                         points.emplace_back(0, y, z); // Assuming the global coord system has y in the profiler's x direction.
                     }
                 }
@@ -124,7 +114,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (this->client)
         {
-            UA_Client_delete(this->client);
+            Disconnect();
         }
     }
 
@@ -159,7 +149,7 @@ namespace ProfilerStreaming::Communicate
     {
         if (!this->client)
         {
-            throw std::runtime_error("OPC UA client is not connected");
+            return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
         }
 
         UA_Variant value;
@@ -168,7 +158,8 @@ namespace ProfilerStreaming::Communicate
         UA_StatusCode status = UA_Client_readValueAttribute(this->client, nodeId, &value);
         if(status != UA_STATUSCODE_GOOD) 
         {
-            throw std::runtime_error("Failed to read value from OPC UA server");
+            UA_Variant_clear(&value);
+            return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
         }
 
         std::vector<Eigen::Vector3d> points;
@@ -179,7 +170,8 @@ namespace ProfilerStreaming::Communicate
 
             if (len != 2)
             {
-                throw std::runtime_error("Expected a byte array of length 2 for distance measurement");
+                UA_Variant_clear(&value);
+                return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
             }
             else
             {
@@ -190,11 +182,13 @@ namespace ProfilerStreaming::Communicate
         }
         else
         {
-            throw std::runtime_error("Unexpected data type received from OPC UA server");
+            UA_Variant_clear(&value);
+            return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
         }
 
-        Chronometer* chronometer = Chronometer::GetInstance();
-        auto timestamp = chronometer->GetCurrentTime();
+        UA_Variant_clear(&value);
+        Chronometer& chronometer = Chronometer::GetInstance();
+        auto timestamp = chronometer.GetCurrentTime();
         return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(points, timestamp);
     }
 
@@ -206,23 +200,47 @@ namespace ProfilerStreaming::Communicate
 
     void TCPRecorder::StartRecording()
     {
+        if (this->recordingThread.joinable())
+        {
+            throw std::runtime_error("TCPRecorder: cannot start recording while already recording. Call StopRecording() first.");
+        }
+
         this->recordingSwitch = true;
 
         this->recordingThread = std::thread([this]()
         {
             while (this->recordingSwitch)
             {
-                auto profile = this->tcpCommunicator.GetDataWithTimestamp();
-                this->recordedData.push_back(profile);
+                try
+                {
+                    auto profile = this->tcpCommunicator.GetDataWithTimestamp();
+                    std::lock_guard<std::mutex> lock(this->dataMutex);
+                    this->recordedData.push_back(profile);
+                }
+                catch (const std::exception& e)
+                {
+                    std::cerr << "TCPRecorder: error while recording, stopping: " << e.what() << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
+                catch (...)
+                {
+                    std::cerr << "TCPRecorder: unknown error while recording, stopping." << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
-        this->recordingThread.detach();
     }
 
     void TCPRecorder::StopRecording()
     {
         this->recordingSwitch = false;
+        if (this->recordingThread.joinable())
+        {
+            this->recordingThread.join();
+        }
     }
 
     OPCUARecorder::~OPCUARecorder()
@@ -232,24 +250,55 @@ namespace ProfilerStreaming::Communicate
 
     void OPCUARecorder::StartRecording()
     {
+        if (this->recordingThread.joinable())
+        {
+            throw std::runtime_error("OPCUARecorder: cannot start recording while already recording. Call StopRecording() first.");
+        }
+
         this->recordingSwitch = true;
         this->recordingThread = std::thread([this]()
         {
             while (this->recordingSwitch)
             {
-                auto data = this->opcuaCommunicator.GetDataWithTimestamp();
-                this->recordedData.push_back(data);
+                try
+                {
+                    auto data = this->opcuaCommunicator.GetDataWithTimestamp();
+                    if (data.GetNumPoints() > 0)
+                    {
+                        std::lock_guard<std::mutex> lock(this->dataMutex);
+                        this->recordedData.push_back(data);
+                    }
+                }
+                catch (const std::exception& e)
+                {
+                    std::cerr << "OPCUARecorder: error while recording, stopping: " << e.what() << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
+                catch (...)
+                {
+                    std::cerr << "OPCUARecorder: unknown error while recording, stopping." << std::endl;
+                    this->recordingSwitch = false;
+                    break;
+                }
                 std::this_thread::sleep_for(std::chrono::milliseconds(this->sleepTimeMiliSec));
             }
         });
-        this->recordingThread.detach();
     }
 
     void OPCUARecorder::StopRecording()
     {
         this->recordingSwitch = false;
+        if (this->recordingThread.joinable())
+        {
+            for (int i = 0; i < 5 && this->recordingThread.joinable(); ++i)
+            {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            if (this->recordingThread.joinable())
+            {
+                this->recordingThread.join();
+            }
+        }
     }
-
-    ProfilerStreaming::Communicate::Chronometer* ProfilerStreaming::Communicate::Chronometer::instance = nullptr;
-    std::mutex ProfilerStreaming::Communicate::Chronometer::instanceMutex;
 }
