@@ -23,6 +23,8 @@ class ProfilerStreamerStream(component):
             i_activate_component: bool,
             i_profiler_ip_address: str,
             i_opcua_address: str,
+            i_opcua_namespace: int,
+            i_opcua_id: int,
             i_recording_duration: float,
             i_trajectories: System.Collections.Generic.List[Rhino.Geometry.Line],
             i_slicing_interval: float,
@@ -33,6 +35,10 @@ class ProfilerStreamerStream(component):
 
         if i_slicing_interval is None:
             i_slicing_interval = 2.0
+        if i_opcua_namespace is None:
+            i_opcua_namespace = 6
+        if i_opcua_id is None:
+            i_opcua_id = 229916
 
         tcp_communicator = None
         try:
@@ -50,7 +56,7 @@ class ProfilerStreamerStream(component):
 
         opcua_communicator = None
         try:
-            opcua_communicator = psb.OPCUACommunicator(i_opcua_address, psb.DeviceType.IO_LINK, (6, 229916))
+            opcua_communicator = psb.OPCUACommunicator(i_opcua_address, psb.DeviceType.IO_LINK, (i_opcua_namespace, i_opcua_id))
             opcua_communicator.Connect()
         except Exception as e:
             if opcua_communicator is not None:

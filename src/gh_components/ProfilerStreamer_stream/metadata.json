@@ -50,6 +50,30 @@
                 "typeHintID": "str"
             },
             {
+                "name": "i_opcua_namespace",
+                "nickname": "i_opcua_namespace",
+                "description": "The namespace index of the OPC UA device.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "int"
+            },
+            {
+                "name": "i_opcua_id",
+                "nickname": "i_opcua_id",
+                "description": "The ID of the OPC UA device.",
+                "optional": true,
+                "allowTreeAccess": true,
+                "showTypeHints": true,
+                "scriptParamAccess": "item",
+                "wireDisplay": "default",
+                "sourceCount": 0,
+                "typeHintID": "int"
+            },
+            {
                 "name": "i_recording_duration",
                 "nickname": "i_recording_duration",
                 "description": "The duration for recording, in seconds.",
