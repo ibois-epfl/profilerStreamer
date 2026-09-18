@@ -56,13 +56,11 @@ namespace ProfilerStreaming::Communicate
         {
             if (!this->communicationHandle)
             {
-                // Return empty point cloud instead of throwing when disconnected
                 return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
             }
             if (!this->streamHandle)
             {
                 this->streamHandle = this->communicationHandle->CreateStream();
-                // this->streamHandle->SetReceiveBufferSize( 2 * 1024 * 1024 );
                 this->streamHandle->Start();
             }
             std::vector<Eigen::Vector3d> points;
@@ -72,15 +70,13 @@ namespace ProfilerStreaming::Communicate
             if( this->streamHandle->ProfileAvailable( ) )
             {
                 const Baumer::OXApi::UdpStreaming::ProfilePacket profilePacket = this->streamHandle->ReadProfile();
-                // GetProfile() only for Precision/XStart: it reports the sensor's latest profile, which may
-                // not be the packet we just dequeued if more than one was queued up.
                 const Baumer::OXApi::Types::Profile profileInfo = this->communicationHandle->GetProfile();
                 timestamp = chronometer.GetCurrentTime();
 
                 for (u_int i = 0; i < profilePacket.Length; ++i)
                 {
                     if (profilePacket.X.at(i) == 0 && profilePacket.Z.at(i) == 0)
-                        continue; // skip invalid points
+                        continue;
                     else if (profilePacket.X.at(i) && profilePacket.Z.at(i))
                     {
                         double y = (profilePacket.X.at(i) + profileInfo.XStart) / (double)profileInfo.Precision;
@@ -148,7 +144,6 @@ namespace ProfilerStreaming::Communicate
     {
         if (!this->client)
         {
-            // Return empty point cloud instead of throwing when disconnected
             return ProfilerStreaming::SpatialData::PointCloudWithTimestamp(std::vector<Eigen::Vector3d>(), std::chrono::high_resolution_clock::now());
         }
 
@@ -288,7 +283,6 @@ namespace ProfilerStreaming::Communicate
         this->recordingSwitch = false;
         if (this->recordingThread.joinable())
         {
-            // Wait briefly for thread to finish, then detach if still running
             for (int i = 0; i < 5 && this->recordingThread.joinable(); ++i)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
